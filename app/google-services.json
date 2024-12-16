@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "851344741591",
+    "project_id": "bookhub-53b99",
+    "storage_bucket": "bookhub-53b99.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851344741591:android:39d0726bde579226790c92",
+        "android_client_info": {
+          "package_name": "com.sandraygonzalo.bookhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851344741591-nhl7uihjg610qj59j4jm67411s9jfcni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sandraygonzalo.bookhub",
+            "certificate_hash": "4b544bf0c303e3acd0098e3b83f2320600644b20"
+          }
+        },
+        {
+          "client_id": "851344741591-43naq1e7ap9t19rt5702pcrqo6qscfma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIgW6jrx090w2NyRGjEibLXaGmr7yA25Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851344741591-43naq1e7ap9t19rt5702pcrqo6qscfma.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851344741591-um8ukv6honh0q94oje6q0donkubc4kug.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "immune.sandraygonzalo.Bookhub"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
