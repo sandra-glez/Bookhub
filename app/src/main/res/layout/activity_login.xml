@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="7dp"
                 android:layout_marginBottom="5dp"
                 android:text="Iniciar sesión"
                 android:textColor="#252529"
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="25dp"
                 android:hint="Contraseña"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:padding="16dp"
                 android:textSize="13sp"
                 android:background="@drawable/edit_text_bg" />
