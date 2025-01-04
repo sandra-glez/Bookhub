@@ -1,0 +1,83 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <!-- Encabezado: Imagen y saludo -->
+    <LinearLayout
+        android:id="@+id/header_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="#F5F5F5">
+
+        <!-- Imagen de perfil -->
+        <ImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:src="@drawable/ic_user_avatar"
+            android:contentDescription="@string/user_avatar"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"/>
+
+        <!-- Saludo y ubicación -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hola, Nombre"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginTop="3dp"/>
+
+            <TextView
+                android:id="@+id/user_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/secondary_text" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Barra de menú inferior -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="307dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/rounded_bottom_nav"
+        android:elevation="15dp"
+        android:outlineSpotShadowColor="#40000000"
+        app:itemIconSize="38dp"
+        app:itemIconTint="@color/menu_icon_color"
+        app:itemTextColor="@android:color/transparent"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
