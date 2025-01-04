@@ -10,9 +10,9 @@
     <!-- Imagen superior (inicio.png) -->
     <ImageView
         android:id="@+id/topImage"
-        android:layout_width="213dp"
-        android:layout_height="222dp"
-        android:layout_marginTop="50dp"
+        android:layout_width="268dp"
+        android:layout_height="302dp"
+        android:layout_marginTop="60dp"
         android:contentDescription="Imagen de inicio"
         android:src="@drawable/inicio"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
         android:id="@+id/bookhubImage"
         android:layout_width="140dp"
         android:layout_height="19dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="1dp"
         android:contentDescription="Logo Bookhub"
         android:src="@drawable/bookhub"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,12 +42,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="65dp"
         android:backgroundTint="#F5F5F5">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="439dp"
+            android:layout_height="413dp"
             android:orientation="vertical"
             android:padding="25dp">
 
@@ -56,56 +56,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
                 android:text="Entrar"
                 android:textColor="#252529"
-                android:textSize="24sp"
+                android:textSize="23sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/loginButton"
+                style="@style/CustomButtonGreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="20dp"
                 android:padding="12dp"
                 android:text="Iniciar sesión"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                style="@style/CustomButtonGreen" />
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/registerButton"
+                style="@style/CustomButtonGreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="20dp"
                 android:padding="12dp"
                 android:text="Registrarse"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                style="@style/CustomButtonGreen" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/orText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O"
-                android:textSize="16sp"
-                android:textColor="#BABABA"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="O"
+                android:textColor="#BABABA"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/googleLoginButton"
+                style="@style/CustomButtonWhite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:padding="12dp"
                 android:text="Entrar con Google"
                 android:textColor="#252529"
-                android:textSize="14sp"
-                style="@style/CustomButtonWhite" />
+                android:textSize="14sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
