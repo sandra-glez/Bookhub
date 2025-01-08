@@ -22,8 +22,8 @@
             android:id="@+id/user_avatar"
             android:layout_width="58dp"
             android:layout_height="58dp"
-            android:src="@drawable/ic_user_avatar"
-            android:contentDescription="@string/user_avatar"
+            android:src="@drawable/ic_profile"
+            android:contentDescription="Usuario"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
             android:layout_marginStart="20dp"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hola, Nombre"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginTop="3dp"/>
 
             <TextView
@@ -53,24 +53,76 @@
                 android:layout_height="wrap_content"
                 android:text="Ubicación"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/secondary_text" />
         </LinearLayout>
     </LinearLayout>
 
+
     <!-- Barra de menú inferior -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_search_background"
+        android:padding="8dp"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="120dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Icono de búsqueda (izquierda) -->
+        <ImageView
+            android:id="@+id/iconSearch"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/search_icon"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Input de búsqueda -->
+        <EditText
+            android:id="@+id/searchInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:hint="Buscar..."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/filterIcon"
+            app:layout_constraintStart_toEndOf="@id/iconSearch"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Icono de filtro (derecha) -->
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/filter_icon"
+            android:src="@drawable/ic_filter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="307dp"
-        android:layout_height="69dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="70dp"
+        android:layout_width="296dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:layout_marginBottom="50dp"
         android:background="@drawable/rounded_bottom_nav"
         android:elevation="15dp"
         android:outlineSpotShadowColor="#40000000"
-        app:itemIconSize="38dp"
+        app:itemIconSize="25dp"
         app:itemIconTint="@color/menu_icon_color"
         app:itemTextColor="@android:color/transparent"
         app:labelVisibilityMode="unlabeled"

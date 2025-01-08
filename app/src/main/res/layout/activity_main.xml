@@ -10,8 +10,8 @@
     <!-- Imagen superior (inicio.png) -->
     <ImageView
         android:id="@+id/topImage"
-        android:layout_width="268dp"
-        android:layout_height="302dp"
+        android:layout_width="243dp"
+        android:layout_height="290dp"
         android:layout_marginTop="60dp"
         android:contentDescription="Imagen de inicio"
         android:src="@drawable/inicio"
