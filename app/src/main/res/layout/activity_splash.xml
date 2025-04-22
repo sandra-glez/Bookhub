@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="200dp"
         android:layout_marginBottom="120dp"
         android:src="@drawable/bookhub"
         android:contentDescription="Imagen Superior"
@@ -19,11 +19,11 @@
     <!-- Imagen inferior -->
     <ImageView
         android:id="@+id/imageBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_width="188dp"
+        android:layout_height="179dp"
         android:layout_below="@id/imageTop"
-        android:src="@drawable/inicio"
-        android:contentDescription="Imagen Inferior" />
+        android:layout_centerHorizontal="true"
+        android:contentDescription="Imagen Inferior"
+        android:src="@drawable/inicio" />
 
 </RelativeLayout>

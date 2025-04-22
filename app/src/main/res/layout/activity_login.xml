@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/topImage"
-        android:layout_width="268dp"
-        android:layout_height="302dp"
+        android:layout_width="175dp"
+        android:layout_height="143dp"
         android:layout_marginTop="60dp"
         android:contentDescription="Imagen de inicio"
         android:src="@drawable/inicio"
@@ -22,7 +22,7 @@
         android:id="@+id/bookhubImage"
         android:layout_width="140dp"
         android:layout_height="19dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="10dp"
         android:contentDescription="Logo Bookhub"
         android:src="@drawable/bookhub"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="55dp"
         android:backgroundTint="#F5F5F5">
 
         <LinearLayout

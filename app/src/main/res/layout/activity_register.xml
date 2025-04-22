@@ -7,22 +7,22 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="#688239">
 
-<ImageView
-    android:id="@+id/topImage"
-    android:layout_width="268dp"
-    android:layout_height="302dp"
-    android:layout_marginTop="50dp"
-    android:contentDescription="Imagen de inicio"
-    android:src="@drawable/inicio"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/topImage"
+        android:layout_width="196dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="Imagen de inicio"
+        android:src="@drawable/inicio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 <ImageView
     android:id="@+id/bookhubImage"
     android:layout_width="140dp"
     android:layout_height="19dp"
-    android:layout_marginTop="1dp"
+    android:layout_marginTop="10dp"
     android:contentDescription="Logo Bookhub"
     android:src="@drawable/bookhub"
     app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@ android:background="#688239">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
-    android:layout_marginTop="45dp"
+    android:layout_marginTop="55dp"
     android:backgroundTint="#F5F5F5">
 
     <LinearLayout
@@ -54,11 +54,11 @@ android:background="#688239">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="4dp"
             android:text="Registro"
             android:textColor="#252529"
-            android:textSize="23sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -90,7 +90,7 @@ android:background="#688239">
             android:layout_marginBottom="12dp"
             android:hint="Correo electrónico"
             android:inputType="textEmailAddress"
-            android:padding="15dp"
+            android:padding="12dp"
             android:textSize="13sp"
             android:background="@drawable/edit_text_bg" />
 
@@ -113,7 +113,7 @@ android:background="#688239">
             android:layout_marginBottom="10dp"
             android:hint="Contraseña"
             android:inputType="textPassword"
-            android:padding="15dp"
+            android:padding="12dp"
             android:textSize="13sp"
             android:background="@drawable/edit_text_bg" />
 
@@ -121,19 +121,28 @@ android:background="#688239">
             android:id="@+id/registerConfirmPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="0dp"
             android:hint="Repetir contraseña"
             android:inputType="textPassword"
-            android:padding="15dp"
+            android:padding="12dp"
             android:textSize="13sp"
             android:background="@drawable/edit_text_bg" />
+
+        <CheckBox
+            android:id="@+id/termsCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:text="Acepto los términos y condiciones"
+            android:textSize="10sp"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:padding="12dp"
+            android:padding="10dp"
             android:text="Registrarse"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
