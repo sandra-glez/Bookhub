@@ -1,24 +1,17 @@
 package com.sandraygonzalo.bookhub;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.sandraygonzalo.bookhub.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -31,25 +24,29 @@ public class HomeActivity extends AppCompatActivity {
         TextView userName = findViewById(R.id.user_name);
         userName.setText("Hola, Sandra"); // Cambia esto dinámicamente según el usuario
 
-//        // Configurar la barra de menú inferior
-//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-//        bottomNavigationView.setOnItemSelectedListener(item -> {
-//            switch (item.getItemId()) {
-//                case R.id.nav_home:
-//                    // Acción para "Inicio"
-//                    return true;
-//                case R.id.nav_favorites:
-//                    // Acción para "Favoritos"
-//                    return true;
-//                case R.id.nav_messages:
-//                    // Acción para "Mensajes"
-//                    return true;
-//                case R.id.nav_profile:
-//                    // Acción para "Perfil"
-//                    return true;
-//            }
-//            return false;
-//        });
+        // Configurar la barra de menú inferior
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                // Acción para Inicio
+                return true;
+            } else if (itemId == R.id.nav_favorites) {
+                // Acción para Favoritos
+                return true;
+            } else if (itemId == R.id.nav_messages) {
+                // Acción para Mensajes
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                return true;
+            }
+
+            return false;
+        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

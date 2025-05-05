@@ -40,25 +40,23 @@ android:background="#688239">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
-    android:layout_marginTop="55dp"
+    android:layout_marginTop="40dp"
     android:backgroundTint="#F5F5F5">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="439dp"
         android:orientation="vertical"
-        android:padding="25dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/logInText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="4dp"
             android:text="Registro"
             android:textColor="#252529"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
         <TextView
@@ -66,10 +64,9 @@ android:background="#688239">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginBottom="9dp"
             android:text="¡Bienvenido/a! Introduce tus datos."
             android:textColor="#838589"
-            android:textSize="13sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/correoText"
@@ -77,7 +74,7 @@ android:background="#688239">
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginTop="7dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="1dp"
             android:text="Correo"
             android:textColor="#252529"
             android:textSize="14sp"
@@ -87,11 +84,10 @@ android:background="#688239">
             android:id="@+id/registerEmailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
             android:hint="Correo electrónico"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:background="@drawable/edit_text_bg" />
 
         <TextView
@@ -100,7 +96,7 @@ android:background="#688239">
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginTop="7dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="1dp"
             android:text="Contraseña"
             android:textColor="#252529"
             android:textSize="14sp"
@@ -110,30 +106,53 @@ android:background="#688239">
             android:id="@+id/registerPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:hint="Contraseña"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:background="@drawable/edit_text_bg" />
 
         <EditText
             android:id="@+id/registerConfirmPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
             android:hint="Repetir contraseña"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:background="@drawable/edit_text_bg" />
+
+        <TextView
+            android:id="@+id/tlfText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="1dp"
+            android:text="Teléfono"
+            android:textColor="#252529"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/registerPhoneEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Teléfono"
+            android:inputType="phone"
+            android:maxLength="15"
+            android:padding="12dp"
+            android:textSize="11sp"
+            android:background="@drawable/edit_text_bg"
+            />
 
         <CheckBox
             android:id="@+id/termsCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
-            android:text="Acepto los términos y condiciones"
+            android:text="Acepto los términos y condiciones y la política de privacidad"
             android:textSize="10sp"
             android:textColor="#000000"/>
 
@@ -141,8 +160,7 @@ android:background="#688239">
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:padding="10dp"
+            android:padding="9dp"
             android:text="Registrarse"
             android:textColor="#FFFFFF"
             android:textSize="14sp"

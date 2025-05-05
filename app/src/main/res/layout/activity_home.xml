@@ -89,15 +89,15 @@
         <!-- Campo de búsqueda -->
         <EditText
             android:id="@+id/search_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Buscar..."
-            android:background="@android:color/transparent"
-            android:paddingStart="15dp"
-            android:textSize="15sp"
+            android:layout_width="267dp"
+            android:layout_height="32dp"
             android:layout_marginTop="13dp"
-            android:layout_marginBottom="13dp"/>
+            android:layout_marginBottom="13dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Buscar..."
+            android:paddingStart="15dp"
+            android:textSize="15sp" />
 
         <!-- Ícono de filtro -->
         <ImageView
@@ -162,12 +162,11 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="296dp"
         android:layout_height="60dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
         android:background="@drawable/rounded_bottom_nav"
         android:elevation="15dp"
-        android:outlineSpotShadowColor="#40000000"
         app:itemIconSize="25dp"
         app:itemIconTint="@color/menu_icon_color"
         app:itemTextColor="@android:color/transparent"
