@@ -280,7 +280,10 @@ public class RegisterActivity extends AppCompatActivity {
         db.collection("users").document(user.getUid()).set(userData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(RegisterActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                    finish(); // Volver a la pantalla de inicio de sesión
+                    // PANTALLA ONBOARDING
+                    Intent intent = new Intent(RegisterActivity.this, OnboardingActivity.class);
+                    startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(RegisterActivity.this, "Error al guardar en Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();

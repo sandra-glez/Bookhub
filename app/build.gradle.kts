@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -53,5 +54,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:21.0.1")
     implementation ("com.google.firebase:firebase-firestore:24.9.1")
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
-
+    implementation ("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 }
