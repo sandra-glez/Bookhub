@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.content.Intent;
@@ -59,7 +60,7 @@ public class OnboardingActivity extends AppCompatActivity {
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
         locationInput = findViewById(R.id.locationInput);
-//        bioInput = findViewById(R.id.bioInput);
+        bioInput = findViewById(R.id.bioInput);
         profileImage = findViewById(R.id.profileImage);
         genreChipGroup = findViewById(R.id.genreChipGroup);
         Button saveButton = findViewById(R.id.saveButton);
@@ -99,7 +100,13 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void saveUserData() {
-        String uid = mAuth.getCurrentUser().getUid();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String uid = currentUser.getUid();
         String username = usernameInput.getText().toString().trim();
 
         if (username.isEmpty()) {
@@ -107,7 +114,6 @@ public class OnboardingActivity extends AppCompatActivity {
             return;
         }
 
-        // Obtener géneros seleccionados
         List<String> selectedGenres = new ArrayList<>();
         for (int i = 0; i < genreChipGroup.getChildCount(); i++) {
             Chip chip = (Chip) genreChipGroup.getChildAt(i);
@@ -116,49 +122,48 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         }
 
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("username", username);
-        userData.put("firstName", firstNameInput.getText().toString().trim());
-        userData.put("lastName", lastNameInput.getText().toString().trim());
-        userData.put("location", locationInput.getText().toString().trim());
-        userData.put("bio", bioInput.getText().toString().trim());
-        userData.put("preferences", selectedGenres);
-        userData.put("profilePicture", "");
-        userData.put("rating", new HashMap<String, Object>() {{
-            put("average", 0.0);
-            put("totalExchanges", 0);
-        }});
-        userData.put("booksAvailable", new ArrayList<String>());
-        userData.put("exchangeHistory", new ArrayList<String>());
-        userData.put("favorites", new ArrayList<String>());
-        userData.put("notificationsEnabled", true);
+        Map<String, Object> userUpdates = new HashMap<>();
+        userUpdates.put("username", username);
+        userUpdates.put("firstName", firstNameInput.getText().toString().trim());
+        userUpdates.put("lastName", lastNameInput.getText().toString().trim());
+        userUpdates.put("location", locationInput.getText().toString().trim());
+        userUpdates.put("bio", bioInput.getText().toString().trim());
+        userUpdates.put("preferences", selectedGenres);
 
         if (imageUri != null) {
             StorageReference fileRef = storageRef.child(uid + ".jpg");
             fileRef.putFile(imageUri)
-                    .continueWithTask(task -> fileRef.getDownloadUrl())
+                    .continueWithTask(task -> {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return fileRef.getDownloadUrl();
+                    })
                     .addOnSuccessListener(uri -> {
-                        userData.put("profilePicture", uri.toString());
-                        saveToFirestore(uid, userData);
+                        userUpdates.put("profilePicture", uri.toString());
+                        updateFirestore(uid, userUpdates);
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error subiendo imagen", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error subiendo imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
-            saveToFirestore(uid, userData);
+            updateFirestore(uid, userUpdates);
         }
     }
 
-    private void saveToFirestore(String uid, Map<String, Object> userData) {
-        db.collection("users").document(uid).set(userData)
+
+    private void updateFirestore(String uid, Map<String, Object> userUpdates) {
+        db.collection("users").document(uid)
+                .update(userUpdates)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Onboarding completo", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(OnboardingActivity.this, HomeActivity.class));
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al actualizar perfil: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
 

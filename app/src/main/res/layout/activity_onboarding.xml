@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".OnboardingActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -56,7 +64,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="6dp" />
 
     <EditText
         android:id="@+id/firstNameInput"
@@ -68,7 +76,7 @@
         android:background="@drawable/edit_text_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
         android:hint="Nombre"
         app:layout_constraintTop_toBottomOf="@id/usernameInput" />
 
@@ -84,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@id/firstNameInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="6dp" />
 
     <EditText
         android:id="@+id/locationInput"
@@ -98,22 +106,25 @@
         app:layout_constraintTop_toBottomOf="@id/lastNameInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="6dp" />
 
+    <EditText
+        android:id="@+id/bioInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Biografía breve"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:maxLines="5"
+        android:gravity="top|start"
+        android:padding="16dp"
+        android:textSize="12sp"
+        android:background="@drawable/edit_text_bg"
+        app:layout_constraintTop_toBottomOf="@id/locationInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/bioInput"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:hint="Biografía"-->
-<!--        android:inputType="text"-->
-<!--        android:padding="13dp"-->
-<!--        android:textSize="13sp"-->
-<!--        android:background="@drawable/edit_text_bg"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/locationInput"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:layout_marginTop="12dp" />-->
 
     <!-- Texto: géneros favoritos -->
     <TextView
@@ -124,9 +135,9 @@
         android:textColor="#252529"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/locationInput"
+        app:layout_constraintTop_toBottomOf="@id/bioInput"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="10dp" />
 
     <!-- Chips para selección múltiple -->
     <com.google.android.material.chip.ChipGroup
@@ -138,8 +149,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:singleSelection="false"
         app:selectionRequired="false"
-        app:chipSpacing="8dp"
-        android:layout_marginTop="12dp"
+        app:chipSpacing="4dp"
+        android:layout_marginTop="6dp"
         android:orientation="horizontal" />
 
     <!-- Botón de guardar -->
@@ -159,6 +170,6 @@
         app:layout_constraintTop_toBottomOf="@id/genreChipGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
+</ScrollView>
 
 

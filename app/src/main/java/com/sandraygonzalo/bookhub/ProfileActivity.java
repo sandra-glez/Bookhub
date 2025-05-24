@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,21 +27,16 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        TextView emailTextView = findViewById(R.id.emailTextView);
-        Button logoutButton = findViewById(R.id.logoutButton);
+        ImageButton settingsButton = findViewById(R.id.settingsButton);
 
-        if (currentUser != null) {
-            emailTextView.setText("Sesión iniciada como:\n" + currentUser.getEmail());
-        }
 
-        logoutButton.setOnClickListener(v -> {
-            mAuth.signOut();
-            Toast.makeText(ProfileActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Limpia el backstack
+        // 🔧 Acción del botón de ajustes
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
 
+        // Estilo transparente para status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);

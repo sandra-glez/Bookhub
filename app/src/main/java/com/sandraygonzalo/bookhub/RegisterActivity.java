@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -268,19 +270,38 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserToFirestore(FirebaseUser user, String phone) {
-        // Crear el objeto con los datos del usuario
         Map<String, Object> userData = new HashMap<>();
-        userData.put("uid", user.getUid());
+
+        // Campos definidos en el modelo
+        userData.put("username", "");  // Se completará en onboarding
+        userData.put("firstName", "");
+        userData.put("lastName", "");
         userData.put("email", user.getEmail());
+        userData.put("location", "");
+        userData.put("bio", "");
+        userData.put("profilePicture", user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : "");
+
+        // Campo adicional personalizado
         userData.put("phone", phone);
-        userData.put("displayName", user.getDisplayName() != null ? user.getDisplayName() : "Usuario");
-        userData.put("profilePicture", user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""); // Imagen opcional
+
+        // Campos estructurados
+        userData.put("preferences", new ArrayList<String>());
+
+        Map<String, Object> rating = new HashMap<>();
+        rating.put("average", 0.0);
+        rating.put("totalExchanges", 0);
+        userData.put("rating", rating);
+
+        userData.put("booksAvailable", new ArrayList<String>());
+        userData.put("exchangeHistory", new ArrayList<String>());
+        userData.put("favorites", new ArrayList<String>());
+        userData.put("notificationsEnabled", true);
 
         // Guardar en Firestore
-        db.collection("users").document(user.getUid()).set(userData)
+        db.collection("users").document(user.getUid())
+                .set(userData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(RegisterActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                    // PANTALLA ONBOARDING
                     Intent intent = new Intent(RegisterActivity.this, OnboardingActivity.class);
                     startActivity(intent);
                     finish();
@@ -289,5 +310,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Error al guardar en Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
 
