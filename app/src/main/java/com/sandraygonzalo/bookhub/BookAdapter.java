@@ -3,10 +3,13 @@ package com.sandraygonzalo.bookhub;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -18,50 +21,43 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         this.bookList = bookList;
     }
 
+    public static class BookViewHolder extends RecyclerView.ViewHolder {
+        ImageView coverImage;
+        TextView titleText, authorText;
+
+        public BookViewHolder(View itemView) {
+            super(itemView);
+            coverImage = itemView.findViewById(R.id.book_cover);
+            titleText = itemView.findViewById(R.id.book_title);
+            authorText = itemView.findViewById(R.id.book_author);
+        }
+    }
+
     @NonNull
     @Override
     public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_book_card, parent, false);
+                .inflate(R.layout.item_book, parent, false);
         return new BookViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
         UserBook book = bookList.get(position);
-
         holder.titleText.setText(book.getTitle());
         holder.authorText.setText(book.getAuthor());
-        holder.descriptionText.setText(book.getDescription());
 
-        // Si tu libro tiene imagen, puedes usar Glide aquí:
-        /*
-        if (book.getCoverImageUrl() != null) {
-            Glide.with(holder.itemView.getContext())
-                .load(book.getCoverImageUrl())
+        Glide.with(holder.itemView.getContext())
+                .load(book.getCoverImage())
+                .placeholder(R.drawable.ic_profile)
                 .into(holder.coverImage);
-        }
-        */
-
-        // TODO: Añadir onClickListener si quieres abrir detalles o perfil
     }
 
     @Override
     public int getItemCount() {
         return bookList.size();
     }
-
-    static class BookViewHolder extends RecyclerView.ViewHolder {
-
-        TextView titleText, authorText, descriptionText;
-        // ImageView coverImage; // si lo necesitas
-
-        public BookViewHolder(@NonNull View itemView) {
-            super(itemView);
-            titleText = itemView.findViewById(R.id.bookTitle);
-            authorText = itemView.findViewById(R.id.bookAuthor);
-            descriptionText = itemView.findViewById(R.id.bookDescription);
-            // coverImage = itemView.findViewById(R.id.bookCover);
-        }
-    }
 }
+
+
+

@@ -46,10 +46,14 @@ public class OnboardingActivity extends AppCompatActivity {
     private StorageReference storageRef;
 
     private String[] genres = {
-            "Fantasía", "Ciencia ficción", "Romance", "Thriller",
-            "No ficción", "Misterio", "Clásicos", "Histórico",
-            "Terror", "Biografía", "Juvenil", "Poesía"
-    };
+            "Acción", "Aventura", "Biografía", "Ciencia", "Ciencia ficción",
+            "Clásicos", "Comedia", "Contemporáneo", "Crimen", "Cuento",
+            "Distopía", "Drama", "Educación", "Erótico", "Fantasía",
+            "Ficción histórica", "Filosofía", "Graphic novel", "Historia", "Infantil",
+            "Juvenil", "Misterio", "Paranormal", "Poesía", "Realismo mágico",
+            "Romance", "Suspense", "Terror", "Thriller", "Otros"
+
+};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +78,25 @@ public class OnboardingActivity extends AppCompatActivity {
             Chip chip = new Chip(this);
             chip.setText(genre);
             chip.setCheckable(true);
-            chip.setChipBackgroundColorResource(R.color.chip_background); // Opcional
-            chip.setTextColor(getResources().getColor(R.color.chip_text)); // Opcional
+            chip.setChipBackgroundColorResource(R.color.chip_background);
+            chip.setTextColor(getResources().getColor(R.color.chip_text));
+
+            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                int selectedCount = 0;
+                for (int i = 0; i < genreChipGroup.getChildCount(); i++) {
+                    Chip c = (Chip) genreChipGroup.getChildAt(i);
+                    if (c.isChecked()) selectedCount++;
+                }
+                if (selectedCount > 4) {
+                    // Si se seleccionan más de 4, desmarcar el chip actual y mostrar mensaje
+                    chip.setChecked(false);
+                    Toast.makeText(this, "Solo puedes seleccionar hasta 4 géneros", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             genreChipGroup.addView(chip);
         }
+
 
         // Selección de imagen
         profileImage.setOnClickListener(v -> openGallery());

@@ -6,13 +6,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -21,113 +28,89 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private EditText searchInput;
     private RecyclerView recyclerView;
-    private BookAdapter bookAdapter;
-    private List<UserBook> bookList = new ArrayList<>();
-    private String currentUserId;
-    private List<String> userPreferences = new ArrayList<>();
+    private BookAdapter adapter;
+    private List<UserBook> bookList;
+    private ImageView userAvatar;
+    private TextView userNameText, userLocationText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
-
-        searchInput = findViewById(R.id.search_input);
         recyclerView = findViewById(R.id.books_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        bookAdapter = new BookAdapter(bookList);
-        recyclerView.setAdapter(bookAdapter);
 
-        cargarDatosUsuario();
+        bookList = new ArrayList<>();
+        adapter = new BookAdapter(bookList);
+        recyclerView.setAdapter(adapter);
 
-        // Buscar al escribir
-        searchInput.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        userAvatar = findViewById(R.id.user_avatar);
+        userNameText = findViewById(R.id.user_name);
+        userLocationText = findViewById(R.id.user_location);
+        loadUserProfile();
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().isEmpty()) {
-                    mostrarLibrosRecomendados();
-                } else {
-                    buscarLibrosYUsuarios(s.toString());
-                }
-            }
-        });
+
+        fetchUserBooks();
     }
 
-    private void cargarDatosUsuario() {
-        db.collection("users").document(currentUserId).get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        userPreferences = (List<String>) document.get("preferences");
-                        mostrarLibrosRecomendados();
+    private void loadUserProfile() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        String uid = currentUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        String location = documentSnapshot.getString("location");
+                        String profilePictureUrl = documentSnapshot.getString("profilePicture");
+
+                        userNameText.setText("Hola, " + firstName + " " + lastName);
+                        userLocationText.setText("📍 " + (location != null ? location : "Sin ubicación"));
+
+                        if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                            Glide.with(this)
+                                    .load(profilePictureUrl)
+                                    .placeholder(R.drawable.ic_user_avatar)
+                                    .circleCrop()
+                                    .into(userAvatar);
+                        }
                     }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error al obtener perfil de usuario", e);
                 });
     }
 
-    private void mostrarLibrosRecomendados() {
+
+    private void fetchUserBooks() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("userBooks")
                 .whereEqualTo("available", true)
                 .get()
-                .addOnSuccessListener(query -> {
-                    bookList.clear();
-                    for (QueryDocumentSnapshot doc : query) {
-                        String genre = doc.getString("genre");
-                        if (userPreferences.contains(genre)) {
-                            UserBook book = doc.toObject(UserBook.class);
-                            if (!doc.getString("ownerId").equals(currentUserId)) {
-                                book.setId(doc.getId());
-                                bookList.add(book);
-                            }
-                        }
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<UserBook> bookList = new ArrayList<>();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        UserBook book = doc.toObject(UserBook.class);
+                        bookList.add(book);
                     }
-                    bookAdapter.notifyDataSetChanged();
+
+                    BookAdapter adapter = new BookAdapter(bookList);
+                    recyclerView.setAdapter(adapter);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al obtener libros", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error", e);
                 });
     }
 
-    private void buscarLibrosYUsuarios(String keyword) {
-        bookList.clear();
-
-        // Búsqueda en libros
-        db.collection("userBooks")
-                .whereEqualTo("available", true)
-                .get()
-                .addOnSuccessListener(query -> {
-                    for (QueryDocumentSnapshot doc : query) {
-                        String title = doc.getString("title");
-                        if (title != null && title.toLowerCase().contains(keyword.toLowerCase())) {
-                            UserBook book = doc.toObject(UserBook.class);
-                            book.setId(doc.getId());
-                            bookList.add(book);
-                        }
-                    }
-
-                    // Búsqueda en usuarios (username)
-                    db.collection("users")
-                            .get()
-                            .addOnSuccessListener(users -> {
-                                for (QueryDocumentSnapshot userDoc : users) {
-                                    String username = userDoc.getString("username");
-                                    if (username != null && username.toLowerCase().contains(keyword.toLowerCase())) {
-                                        // Mostrar en forma de "libro falso" o sugerencia de usuario
-                                        UserBook fake = new UserBook();
-                                        fake.setTitle("Usuario: @" + username);
-                                        fake.setAuthor(userDoc.getString("firstName"));
-                                        fake.setDescription("Perfil encontrado");
-                                        bookList.add(fake);
-                                    }
-                                }
-                                bookAdapter.notifyDataSetChanged();
-                            });
-                });
-    }
 }
-
