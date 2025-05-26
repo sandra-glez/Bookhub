@@ -4,19 +4,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import com.sandraygonzalo.bookhub.R;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,7 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         recyclerView = findViewById(R.id.books_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        int numberOfColumns = 3;
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         bookList = new ArrayList<>();
         adapter = new BookAdapter(bookList);
@@ -54,6 +57,44 @@ public class HomeActivity extends AppCompatActivity {
 
 
         fetchUserBooks();
+        // Hacer la barra de estado transparente
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_favorites) {
+                startActivityWithTransition(FavoritesActivity.class);
+                return true;
+            }
+
+            if (itemId == R.id.nav_home) {
+                return true;
+            }
+
+            if (itemId == R.id.nav_profile) {
+                startActivityWithTransition(ProfileActivity.class);
+                return true;
+            }
+
+            if (itemId == R.id.nav_messages) {
+                startActivityWithTransition(MessagesActivity.class);
+                return true;
+            }
+
+            return false;
+        });
+    }
+    private void startActivityWithTransition(Class<?> target) {
+        Intent intent = new Intent(HomeActivity.this, target);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void loadUserProfile() {
@@ -101,7 +142,14 @@ public class HomeActivity extends AppCompatActivity {
                     List<UserBook> bookList = new ArrayList<>();
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         UserBook book = doc.toObject(UserBook.class);
-                        bookList.add(book);
+
+                        // Validación para evitar libros vacíos o placeholders
+                        if (book != null &&
+                                book.getTitle() != null && !book.getTitle().trim().isEmpty() &&
+                                book.getAuthor() != null && !book.getAuthor().trim().isEmpty()) {
+
+                            bookList.add(book);
+                        }
                     }
 
                     BookAdapter adapter = new BookAdapter(bookList);

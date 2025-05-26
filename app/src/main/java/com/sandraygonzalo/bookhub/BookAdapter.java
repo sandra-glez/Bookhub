@@ -49,7 +49,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         Glide.with(holder.itemView.getContext())
                 .load(book.getCoverImage())
-                .placeholder(R.drawable.ic_profile)
                 .into(holder.coverImage);
     }
 
