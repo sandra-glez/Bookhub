@@ -1,5 +1,7 @@
 package com.sandraygonzalo.bookhub;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
+    private final Context context;
     private List<UserBook> bookList;
 
-    public BookAdapter(List<UserBook> bookList) {
+    public BookAdapter(List<UserBook> bookList, Context context) {
         this.bookList = bookList;
+        this.context = context;
     }
 
     public static class BookViewHolder extends RecyclerView.ViewHolder {
@@ -46,6 +51,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         UserBook book = bookList.get(position);
         holder.titleText.setText(book.getTitle());
         holder.authorText.setText(book.getAuthor());
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, BookDetailActivity.class);
+            intent.putExtra("book", new Gson().toJson(book)); // Pasamos el objeto como JSON
+            context.startActivity(intent);
+        });
+
 
         Glide.with(holder.itemView.getContext())
                 .load(book.getCoverImage())

@@ -13,9 +13,16 @@ public class UserBook {
     private String ownerId;
     private boolean available;
     private Timestamp createdAt;
+    private String id;
 
     public UserBook() {}
 
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public String getCoverImage() { return coverImage; }

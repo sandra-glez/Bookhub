@@ -6,9 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import com.sandraygonzalo.bookhub.R;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         bookList = new ArrayList<>();
-        adapter = new BookAdapter(bookList);
+        adapter = new BookAdapter(bookList, this);
         recyclerView.setAdapter(adapter);
 
         userAvatar = findViewById(R.id.user_avatar);
@@ -57,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         fetchUserBooks();
-        // Hacer la barra de estado transparente
+        // BARRA DE ESTADO Y MENÚ
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -90,7 +94,80 @@ public class HomeActivity extends AppCompatActivity {
 
             return false;
         });
+
+
+        // BUSCADOR
+
+        EditText searchBar = findViewById(R.id.search_bar);
+        Spinner genreSpinner = findViewById(R.id.genre_spinner);
+        Spinner conditionSpinner = findViewById(R.id.condition_spinner);
+
+// Opciones de filtro
+        String[] genres = {"Todos", "Ficción", "No ficción", "Romance", "Fantasía", "Ciencia ficción", "Misterio"};
+        String[] conditions = {"Todas", "Nuevo", "Buen estado", "Usado", "Dañado"};
+
+// Adaptadores
+        ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genres);
+        genreAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genreSpinner.setAdapter(genreAdapter);
+
+        ArrayAdapter<String> conditionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, conditions);
+        conditionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        conditionSpinner.setAdapter(conditionAdapter);
+
+        searchBar.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+
+                String query = searchBar.getText().toString().trim();
+                String selectedGenre = genreSpinner.getSelectedItem().toString();
+                String selectedCondition = conditionSpinner.getSelectedItem().toString();
+
+                applyFilters(query, selectedGenre, selectedCondition);
+                return true;
+            }
+            return false;
+        });
+
+
+
     }
+    //BUSCADOR
+    private void applyFilters(String query, String genreFilter, String conditionFilter) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("userBooks")
+                .whereEqualTo("available", true)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<UserBook> filteredList = new ArrayList<>();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        UserBook book = doc.toObject(UserBook.class);
+
+                        boolean matchesText = query.isEmpty() ||
+                                (book.getTitle() != null && book.getTitle().toLowerCase().contains(query.toLowerCase())) ||
+                                (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(query.toLowerCase()));
+
+                        boolean matchesGenre = genreFilter.equals("Todos") ||
+                                (book.getGenres() != null && book.getGenres().contains(genreFilter));
+
+                        boolean matchesCondition = conditionFilter.equals("Todas") ||
+                                (book.getCondition() != null && book.getCondition().equalsIgnoreCase(conditionFilter));
+
+                        if (matchesText && matchesGenre && matchesCondition) {
+                            filteredList.add(book);
+                        }
+                    }
+
+                    recyclerView.setAdapter(new BookAdapter(filteredList, this));
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al aplicar filtros", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error", e);
+                });
+    }
+
+
     private void startActivityWithTransition(Class<?> target) {
         Intent intent = new Intent(HomeActivity.this, target);
         startActivity(intent);
@@ -147,12 +224,12 @@ public class HomeActivity extends AppCompatActivity {
                         if (book != null &&
                                 book.getTitle() != null && !book.getTitle().trim().isEmpty() &&
                                 book.getAuthor() != null && !book.getAuthor().trim().isEmpty()) {
-
+                            book.setId(doc.getId());
                             bookList.add(book);
                         }
                     }
 
-                    BookAdapter adapter = new BookAdapter(bookList);
+                    BookAdapter adapter = new BookAdapter(bookList, this);
                     recyclerView.setAdapter(adapter);
                 })
                 .addOnFailureListener(e -> {
