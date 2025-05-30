@@ -1,37 +1,46 @@
 package com.sandraygonzalo.bookhub;
 
-import java.security.Timestamp;
+
+import com.google.firebase.Timestamp;
+
 import java.util.List;
 
 public class ChatPreview {
+    private String exchangeId;
+    private String username;
     private String lastMessage;
     private Timestamp lastMessageAt;
-    private List<String> participants;
+    private String bookCoverUrl;
 
-    public ChatPreview() {} // Constructor vacío obligatorio para Firestore
+    public ChatPreview() {
+    }
+
+    public ChatPreview(String exchangeId, String username, String lastMessage, Timestamp lastMessageAt, String bookCoverUrl) {
+        this.exchangeId = exchangeId;
+        this.username = username;
+        this.lastMessage = lastMessage;
+        this.lastMessageAt = lastMessageAt;
+        this.bookCoverUrl = bookCoverUrl;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     public String getLastMessage() {
         return lastMessage;
-    }
-
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     public Timestamp getLastMessageAt() {
         return lastMessageAt;
     }
 
-    public void setLastMessageAt(Timestamp lastMessageAt) {
-        this.lastMessageAt = lastMessageAt;
-    }
-
-    public List<String> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<String> participants) {
-        this.participants = participants;
+    public String getBookCoverUrl() {
+        return bookCoverUrl;
     }
 }
 

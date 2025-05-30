@@ -1,27 +1,34 @@
 package com.sandraygonzalo.bookhub;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
-
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.widget.Toast;
 
 public class BookDetailActivity extends AppCompatActivity {
@@ -143,6 +150,58 @@ public class BookDetailActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> Toast.makeText(this, "Error al eliminar favorito", Toast.LENGTH_SHORT).show());
             }
         });
+
+        // SOLICITAR INTERCAMBIO
+        Button requestExchangeButton = findViewById(R.id.requestExchangeButton);
+
+        requestExchangeButton.setOnClickListener(v -> {
+            if (book.getId() == null || book.getOwnerId() == null) {
+                Toast.makeText(this, "Este libro no tiene información válida", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String currentUserId = auth.getCurrentUser().getUid();
+            String requestedBookId = book.getId();
+            String ownerId = book.getOwnerId();
+
+            // Crear nuevo intercambio
+            DocumentReference exchangeRef = db.collection("exchanges").document();
+            String exchangeId = exchangeRef.getId();
+
+            Map<String, Object> exchangeData = new HashMap<>();
+            exchangeData.put("user1Id", currentUserId);
+            exchangeData.put("user2Id", ownerId);
+            exchangeData.put("bookRequestedId", requestedBookId);
+            exchangeData.put("bookOfferedId", null); // aún no elegido
+            exchangeData.put("user1Confirmed", false);
+            exchangeData.put("user2Confirmed", false);
+            exchangeData.put("status", "pending");
+            exchangeData.put("createdAt", new Timestamp(new Date()));
+
+            // Crear el chat relacionado
+            Map<String, Object> chatData = new HashMap<>();
+            chatData.put("exchangeId", exchangeId);
+            chatData.put("participants", Arrays.asList(currentUserId, ownerId));
+            chatData.put("lastMessage", "");
+            chatData.put("lastMessageAt", new Timestamp(new Date()));
+
+            // Guardar intercambio y chat en paralelo
+            Task<Void> exchangeTask = exchangeRef.set(exchangeData);
+            Task<Void> chatTask = db.collection("chats").document(exchangeId).set(chatData);
+
+            Tasks.whenAllSuccess(exchangeTask, chatTask).addOnSuccessListener(unused -> {
+                // Abrir el chat tras creación
+                Intent intent = new Intent(BookDetailActivity.this, ChatActivity.class);
+                intent.putExtra("exchangeId", exchangeId);
+                startActivity(intent);
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, "Error al crear el intercambio", Toast.LENGTH_SHORT).show();
+                Log.e("BookDetail", "Error al crear exchange/chat", e);
+            });
+        });
+
     }
 }
 

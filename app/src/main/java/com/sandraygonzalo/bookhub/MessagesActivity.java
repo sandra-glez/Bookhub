@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -42,6 +43,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         loadUserChats();
 
+        // Menú inferior
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_messages);
 
@@ -81,12 +83,37 @@ public class MessagesActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     chatList.clear();
+
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         ChatPreview chat = doc.toObject(ChatPreview.class);
-                        chatList.add(chat);
+                        if (chat != null) {
+                            chatList.add(chat);
+                        }
                     }
-                    adapter = new ChatPreviewAdapter(chatList);
+
+                    // Ordenar por último mensaje (más reciente primero)
+                    chatList.sort((c1, c2) -> {
+                        Timestamp t1 = c1.getLastMessageAt();
+                        Timestamp t2 = c2.getLastMessageAt();
+                        return t2.compareTo(t1);
+                    });
+
+                    // Inicializar y asignar el adapter
+                    adapter = new ChatPreviewAdapter(chatList, MessagesActivity.this, new ChatPreviewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(ChatPreview preview) {
+                            Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
+                            intent.putExtra("exchangeId", preview.getExchangeId());
+                            intent.putExtra("otherUserName", preview.getUsername());
+                            intent.putExtra("bookCoverUrl", preview.getBookCoverUrl());
+                            startActivity(intent);
+                        }
+                    });
+
+                    // ✅ ¡Aquí estaba el fallo!
                     messagesRecyclerView.setAdapter(adapter);
                 });
     }
+
 }
+
