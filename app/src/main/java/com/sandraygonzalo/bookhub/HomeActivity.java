@@ -40,10 +40,17 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView userAvatar;
     private TextView userNameText, userLocationText;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 🔐 VERIFICACIÓN DE SESIÓN
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(this, MainActivity.class); // o LoginActivity si lo tienes separado
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return; // 💡 Detener ejecución del resto de onCreate()
+        }
         setContentView(R.layout.activity_home);
 
         recyclerView = findViewById(R.id.books_recycler_view);

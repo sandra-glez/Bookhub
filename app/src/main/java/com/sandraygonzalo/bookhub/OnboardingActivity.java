@@ -1,7 +1,14 @@
 package com.sandraygonzalo.bookhub;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
@@ -21,17 +28,19 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.chip.Chip;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import android.Manifest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -102,7 +111,77 @@ public class OnboardingActivity extends AppCompatActivity {
         profileImage.setOnClickListener(v -> openGallery());
 
         saveButton.setOnClickListener(v -> saveUserData());
+
+        // PERMISOS DE UBICACIÓN
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1002);
+        } else {
+            getLocation(); // ya tiene permiso
+        }
+        locationInput.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1002);
+            } else {
+                getLocation(); // ya tiene permiso
+            }
+        });
+
+
     }
+    // UBICACIÓN
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1002 && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getLocation(); // permiso aceptado
+        } else {
+            Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permiso de ubicación no concedido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FusedLocationProviderClient fusedClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try {
+            fusedClient.getLastLocation()
+                    .addOnSuccessListener(location -> {
+                        if (location != null) {
+                            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(
+                                        location.getLatitude(), location.getLongitude(), 1);
+                                if (!addresses.isEmpty()) {
+                                    String city = addresses.get(0).getLocality();
+                                    locationInput.setText(city);
+                                } else {
+                                    Toast.makeText(this, "No se pudo obtener la ciudad", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(this, "Ubicación no disponible", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error de seguridad al obtener ubicación", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -176,7 +255,10 @@ public class OnboardingActivity extends AppCompatActivity {
                 .update(userUpdates)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Onboarding completo", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(OnboardingActivity.this, HomeActivity.class));
+                    FirebaseAuth.getInstance().signOut(); // ← importante si ya está logueado
+                    Intent intent = new Intent(OnboardingActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // limpia el backstack
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {

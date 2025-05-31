@@ -167,7 +167,8 @@ public class AddBookActivity extends AppCompatActivity {
         String title = titleEditText.getText().toString().trim();
         String author = authorEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
-        String condition = conditionEditText.getText().toString().trim();
+        String condition = selectedCondition;
+
 
         Map<String, Object> bookData = new HashMap<>();
         bookData.put("title", title);
@@ -183,10 +184,14 @@ public class AddBookActivity extends AppCompatActivity {
         db.collection("userBooks")
                 .add(bookData)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Libro guardado", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show());
+                    String docId = documentReference.getId();
+                    documentReference.update("id", docId) // importante para que funcione el botón de eliminar luego
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Libro guardado", Toast.LENGTH_SHORT).show();
+                                finish(); // volver al perfil
+                            });
+                });
+
     }
 }
 

@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private boolean isDebugMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        isDebugMode = isRunningOnEmulator(); // Cambia a true si quieres forzarlo manualmente
 
         EditText emailEditText = findViewById(R.id.emailEditText);
         EditText passwordEditText = findViewById(R.id.passwordEditText);
@@ -42,6 +44,21 @@ public class LoginActivity extends AppCompatActivity {
         TextView registerTextView = findViewById(R.id.registerTextView);
 
         loginButton.setOnClickListener(view -> {
+            if (isDebugMode) {
+                // 🔧 DEBUG: Login sin 2FA
+                mAuth.signInAnonymously()
+                        .addOnSuccessListener(authResult -> {
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(LoginActivity.this, "Login anónimo fallido: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        );
+                return;
+            }
+
+            // 🔒 LOGIN NORMAL CON 2FA
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
@@ -53,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            // DOBLE FACTOR AUTH
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid = user.getUid();
 
@@ -98,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     });
 
-
                         } else {
                             Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -112,8 +127,19 @@ public class LoginActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            window.setStatusBarColor(Color.TRANSPARENT); // Barra transparente
+            window.setStatusBarColor(Color.TRANSPARENT);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
+    }
+
+    // ✅ Detección automática de emulador
+    private boolean isRunningOnEmulator() {
+        return Build.FINGERPRINT.contains("generic")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT);
     }
 }

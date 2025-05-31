@@ -194,7 +194,8 @@ public class BookDetailActivity extends AppCompatActivity {
             Tasks.whenAllSuccess(exchangeTask, chatTask).addOnSuccessListener(unused -> {
                 // Abrir el chat tras creación
                 Intent intent = new Intent(BookDetailActivity.this, ChatActivity.class);
-                intent.putExtra("exchangeId", exchangeId);
+                intent.putExtra("chatId", exchangeId);
+                intent.putExtra("otherUserId", ownerId);
                 startActivity(intent);
             }).addOnFailureListener(e -> {
                 Toast.makeText(this, "Error al crear el intercambio", Toast.LENGTH_SHORT).show();

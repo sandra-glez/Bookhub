@@ -11,69 +11,71 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import android.content.Context;
-import com.google.type.Date;
 
+import com.google.firebase.Timestamp;
+import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class ChatPreviewAdapter extends RecyclerView.Adapter<ChatPreviewAdapter.PreviewViewHolder> {
+public class ChatPreviewAdapter extends RecyclerView.Adapter<ChatPreviewAdapter.ChatViewHolder> {
 
-    private final List<ChatPreview> previewList;
-    private final Context context;
-    private final OnItemClickListener listener;
-
-    public interface OnItemClickListener {
-        void onItemClick(ChatPreview preview);
+    public interface OnChatClickListener {
+        void onChatClick(ChatPreview chat);
     }
 
-    public ChatPreviewAdapter(List<ChatPreview> previewList, Context context, OnItemClickListener listener) {
-        this.previewList = previewList;
+    private List<ChatPreview> chatList;
+    private Context context;
+    private OnChatClickListener listener;
+
+    public ChatPreviewAdapter(List<ChatPreview> chatList, Context context, OnChatClickListener listener) {
+        this.chatList = chatList;
         this.context = context;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public PreviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_chat_preview, parent, false);
-        return new PreviewViewHolder(view);
+        return new ChatViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PreviewViewHolder holder, int position) {
-        ChatPreview preview = previewList.get(position);
+    public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
+        ChatPreview chat = chatList.get(position);
 
-        holder.usernameText.setText(preview.getUsername());
-        holder.lastMessageText.setText(preview.getLastMessage());
+        holder.chatUsername.setText(chat.getUsername());
+        holder.chatLastMessage.setText(chat.getLastMessage());
 
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault())
-                .format(preview.getLastMessageAt().toDate());
-        holder.timeText.setText(time);
+        Timestamp timestamp = chat.getLastMessageAt();
+        if (timestamp != null) {
+            String formattedTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(timestamp.toDate());
+            holder.chatTime.setText(formattedTime);
+        }
 
-        Glide.with(context)
-                .load(preview.getBookCoverUrl())
-                .placeholder(R.drawable.placeholder)
-                .into(holder.coverImage);
+        Picasso.get().load(chat.getBookCoverUrl()).placeholder(R.drawable.placeholder).into(holder.chatBookCover);
 
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(preview));
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onChatClick(chat);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return previewList.size();
+        return chatList.size();
     }
 
-    static class PreviewViewHolder extends RecyclerView.ViewHolder {
-        ImageView coverImage;
-        TextView usernameText, lastMessageText, timeText;
+    static class ChatViewHolder extends RecyclerView.ViewHolder {
+        ImageView chatBookCover;
+        TextView chatUsername, chatLastMessage, chatTime;
 
-        public PreviewViewHolder(@NonNull View itemView) {
+        ChatViewHolder(View itemView) {
             super(itemView);
-            coverImage = itemView.findViewById(R.id.chatBookCover);
-            usernameText = itemView.findViewById(R.id.chatUsername);
-            lastMessageText = itemView.findViewById(R.id.chatLastMessage);
-            timeText = itemView.findViewById(R.id.chatTime);
+            chatBookCover = itemView.findViewById(R.id.chatBookCover);
+            chatUsername = itemView.findViewById(R.id.chatUsername);
+            chatLastMessage = itemView.findViewById(R.id.chatLastMessage);
+            chatTime = itemView.findViewById(R.id.chatTime);
         }
     }
 }

@@ -74,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         UserBook book = doc.toObject(UserBook.class);
+                        book.setId(doc.getId());
                         bookList.add(book);
                     }
                     adapter.notifyDataSetChanged();
