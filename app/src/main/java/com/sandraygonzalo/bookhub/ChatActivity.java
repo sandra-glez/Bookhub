@@ -86,6 +86,17 @@ public class ChatActivity extends AppCompatActivity {
         loadOtherUserInfo();
         loadBookInfo();        // 🔧 Corrige el fallo desde favoritos
         loadExchangeStatus(); // ✅ Muestra mensaje si está acordado
+
+        // BOTÓN VOLVER
+        ImageButton backButton = findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ChatActivity.this, MessagesActivity.class); // <-- cambia esto por el nombre real de tu pantalla de chats
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
     }
 
     @Override
@@ -113,38 +124,79 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadBookInfo() {
+        Log.d("CHAT", "Cargando datos del libro para chatId: " + chatId);
+
         db.collection("exchanges").document(chatId)
                 .get()
                 .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) return;
+                    if (!doc.exists()) {
+                        Log.w("CHAT", "❌ El documento de intercambio no existe");
+                        return;
+                    }
 
+                    String user1Id = doc.getString("user1Id");
                     String bookRequestedId = doc.getString("bookRequestedId");
                     String bookOfferedId = doc.getString("bookOfferedId");
-                    String user1Id = doc.getString("user1Id");
 
-                    if (bookRequestedId == null || bookOfferedId == null || user1Id == null)
+                    Log.d("CHAT", "user1Id: " + user1Id);
+                    Log.d("CHAT", "bookRequestedId: " + bookRequestedId);
+                    Log.d("CHAT", "bookOfferedId: " + bookOfferedId);
+                    Log.d("CHAT", "currentUserId: " + currentUserId);
+
+                    if (user1Id == null || bookRequestedId == null) {
+                        Log.e("CHAT", "⚠️ Faltan campos mínimos para cargar el libro");
                         return;
+                    }
 
-                    String incomingBookId = currentUserId.equals(user1Id) ? bookRequestedId : bookOfferedId;
+                    // Determinar cuál es el libro del otro usuario
+                    String incomingBookId;
+
+                    if (currentUserId.equals(user1Id)) {
+                        incomingBookId = bookRequestedId;
+                    } else {
+                        incomingBookId = (bookOfferedId != null) ? bookOfferedId : bookRequestedId;
+                    }
+
+                    Log.d("CHAT", "📚 ID del libro entrante: " + incomingBookId);
 
                     db.collection("userBooks").document(incomingBookId)
                             .get()
                             .addOnSuccessListener(bookDoc -> {
-                                if (bookDoc.exists()) {
-                                    chatTitle.setText(bookDoc.getString("title"));
-                                    String coverUrl = bookDoc.getString("coverImage");
-                                    if (coverUrl != null && !coverUrl.isEmpty()) {
-                                        Glide.with(this)
-                                                .load(coverUrl)
-                                                .placeholder(R.drawable.placeholder)
-                                                .into(bookCover);
-                                    } else {
-                                        bookCover.setImageResource(R.drawable.placeholder);
-                                    }
+                                if (!bookDoc.exists()) {
+                                    Log.w("CHAT", "❌ El documento del libro no existe: " + incomingBookId);
+                                    return;
                                 }
-                            });
-                });
+
+                                String title = bookDoc.getString("title");
+                                String author = bookDoc.getString("author");
+                                String coverUrl = bookDoc.getString("coverImage");
+
+                                Log.d("CHAT", "📖 Título: " + title);
+                                Log.d("CHAT", "✍️ Autor: " + author);
+                                Log.d("CHAT", "🖼️ URL portada: " + coverUrl);
+
+                                if (title != null && author != null) {
+                                    chatTitle.setText(title + " - " + author);
+                                } else if (title != null) {
+                                    chatTitle.setText(title);
+                                } else {
+                                    chatTitle.setText("Libro");
+                                }
+
+                                if (coverUrl != null && !coverUrl.isEmpty()) {
+                                    Glide.with(this)
+                                            .load(coverUrl)
+                                            .placeholder(R.drawable.placeholder)
+                                            .into(bookCover);
+                                } else {
+                                    bookCover.setImageResource(R.drawable.placeholder);
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.e("CHAT", "Error al obtener userBook", e));
+                })
+                .addOnFailureListener(e -> Log.e("CHAT", "Error al obtener exchange", e));
     }
+
 
     private void loadMessages() {
         messagesRef.orderBy("sentAt", Query.Direction.ASCENDING)
