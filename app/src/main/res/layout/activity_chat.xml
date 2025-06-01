@@ -87,7 +87,20 @@
             android:backgroundTint="@color/verde"
             android:textColor="@android:color/white"
             android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/exchangeStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre libro"
+            android:textStyle="bold"
+            android:textColor="@color/verde"
+            android:visibility="gone"
+            android:textSize="16sp" />
+
+
+
     </LinearLayout>
+
 
     <!-- Lista de mensajes -->
     <androidx.recyclerview.widget.RecyclerView
@@ -100,6 +113,7 @@
         app:layout_constraintBottom_toTopOf="@id/messageBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
     <!-- Input de mensaje -->
     <LinearLayout

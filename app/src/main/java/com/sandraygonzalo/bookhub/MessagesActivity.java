@@ -41,15 +41,13 @@ public class MessagesActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
-            finish(); // o redirige a LoginActivity
+            finish();
             return;
         }
         currentUserId = user.getUid();
 
-
         loadUserChats();
 
-        // Menú inferior
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_messages);
 
@@ -95,7 +93,7 @@ public class MessagesActivity extends AppCompatActivity {
                         List<String> participants = (List<String>) chatDoc.get("participants");
                         String lastMessage = chatDoc.getString("lastMessage");
                         Object rawTimestamp = chatDoc.get("lastMessageAt");
-                        Timestamp lastMessageAt = null;
+                        Timestamp lastMessageAt;
 
                         if (rawTimestamp instanceof Timestamp) {
                             lastMessageAt = (Timestamp) rawTimestamp;
@@ -105,7 +103,6 @@ public class MessagesActivity extends AppCompatActivity {
                             lastMessageAt = Timestamp.now();
                         }
 
-                        // ✅ 1. Obtener el UID del otro usuario
                         String otherUserId = "";
                         for (String id : participants) {
                             if (!id.equals(currentUserId)) {
@@ -118,45 +115,40 @@ public class MessagesActivity extends AppCompatActivity {
                         String finalLastMessage = lastMessage;
                         Timestamp finalLastMessageAt = lastMessageAt;
 
-                        // ✅ 2. Obtener nombre del usuario y portada del libro
                         db.collection("users").document(otherUserId).get()
                                 .addOnSuccessListener(userDoc -> {
                                     String otherUsername = userDoc.getString("username");
 
-                                    // Buscar en exchanges el ID del libro
                                     db.collection("exchanges").document(exchangeId).get()
                                             .addOnSuccessListener(exchangeDoc -> {
-                                                String userBookId = exchangeDoc.getString("bookRequestedId"); // o bookOfferedId, según lógica
+                                                String userBookId = exchangeDoc.getString("bookRequestedId"); // o "bookOfferedId"
 
-                                                // Obtener imagen de portada del libro
                                                 db.collection("userBooks").document(userBookId).get()
                                                         .addOnSuccessListener(bookDoc -> {
                                                             String bookCoverUrl = bookDoc.getString("coverImage");
+                                                            String title = bookDoc.getString("title");
+                                                            String author = bookDoc.getString("author");
 
-                                                            // Crear ChatPreview completo
                                                             ChatPreview preview = new ChatPreview(
                                                                     exchangeId,
-                                                                    finalOtherUserId,              // ✅ this is otherUserId
-                                                                    otherUsername,                 // ✅ username
+                                                                    finalOtherUserId,
+                                                                    otherUsername,
                                                                     finalLastMessage != null ? finalLastMessage : "",
                                                                     finalLastMessageAt != null ? finalLastMessageAt : Timestamp.now(),
                                                                     bookCoverUrl != null ? bookCoverUrl : ""
                                                             );
 
                                                             chatList.add(preview);
-
-                                                            // Ordenar y actualizar adapter
                                                             chatList.sort((c1, c2) -> c2.getLastMessageAt().compareTo(c1.getLastMessageAt()));
 
                                                             if (adapter == null) {
                                                                 adapter = new ChatPreviewAdapter(chatList, MessagesActivity.this, preview1 -> {
-                                                                    Log.d("CHAT_DEBUG", "exchangeId: " + preview1.getExchangeId());
-                                                                    Log.d("CHAT_DEBUG", "otherUserId: " + preview1.getOtherUserId());
                                                                     Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
-                                                                    intent.putExtra("chatId", preview1.getExchangeId());           // 🔁 mismo que exchangeId
-                                                                    intent.putExtra("otherUserId", preview1.getOtherUserId());     // ✅ el UID real
-
+                                                                    intent.putExtra("chatId", preview1.getExchangeId());
+                                                                    intent.putExtra("otherUserId", preview1.getOtherUserId());
                                                                     intent.putExtra("bookCoverUrl", preview1.getBookCoverUrl());
+                                                                    intent.putExtra("title", title != null ? title : "");
+                                                                    intent.putExtra("author", author != null ? author : "");
                                                                     startActivity(intent);
                                                                 });
                                                                 messagesRecyclerView.setAdapter(adapter);
@@ -169,7 +161,4 @@ public class MessagesActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }
-
