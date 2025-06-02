@@ -26,10 +26,12 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
 
     private List<UserBook> bookList;
     private Context context;
+    private boolean isOwner;
 
-    public UserBooksAdapter(List<UserBook> bookList, Context context) {
+    public UserBooksAdapter(List<UserBook> bookList, Context context, boolean isOwner) {
         this.bookList = bookList;
         this.context = context;
+        this.isOwner = isOwner;
     }
 
     public static class BookViewHolder extends RecyclerView.ViewHolder {
@@ -67,11 +69,11 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
                 .into(holder.coverImage);
 
         // Cargar chips de géneros
-        holder.genreChipContainer.removeAllViews(); // limpiar antes de reutilizar
+        holder.genreChipContainer.removeAllViews();
         for (String genre : book.getGenres()) {
             TextView chip = new TextView(context);
             chip.setText(genre);
-            chip.setBackgroundResource(R.drawable.chip_background_checked); // fondo verde redondeado
+            chip.setBackgroundResource(R.drawable.chip_background_checked);
             chip.setTextColor(Color.WHITE);
             chip.setTextSize(12f);
             chip.setPadding(28, 10, 28, 10);
@@ -87,32 +89,39 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
             holder.genreChipContainer.addView(chip);
         }
 
-        // Acción eliminar
-        holder.deleteButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Eliminar libro")
-                    .setMessage("¿Estás seguro de que quieres eliminar este libro?")
-                    .setPositiveButton("Eliminar", (dialog, which) -> {
-                        FirebaseFirestore.getInstance()
-                                .collection("userBooks")
-                                .document(book.getId()) // asegúrate de que el modelo tenga setId() en ProfileActivity
-                                .delete()
-                                .addOnSuccessListener(unused -> {
-                                    int currentPos = holder.getAdapterPosition();
-                                    if (currentPos != RecyclerView.NO_POSITION) {
-                                        bookList.remove(currentPos);
-                                        notifyItemRemoved(currentPos);
-                                    }
-                                    Toast.makeText(context, "Libro eliminado", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
-                                });
-                    })
-                    .setNegativeButton("Cancelar", null)
-                    .show();
-        });
+        // Mostrar u ocultar botón de eliminar según si es el dueño
+        if (isOwner) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Eliminar libro")
+                        .setMessage("¿Estás seguro de que quieres eliminar este libro?")
+                        .setPositiveButton("Eliminar", (dialog, which) -> {
+                            FirebaseFirestore.getInstance()
+                                    .collection("userBooks")
+                                    .document(book.getId())
+                                    .delete()
+                                    .addOnSuccessListener(unused -> {
+                                        int currentPos = holder.getAdapterPosition();
+                                        if (currentPos != RecyclerView.NO_POSITION) {
+                                            bookList.remove(currentPos);
+                                            notifyItemRemoved(currentPos);
+                                        }
+                                        Toast.makeText(context, "Libro eliminado", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                                    });
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            });
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.deleteButton.setOnClickListener(null);
+        }
     }
+
 
     @Override
     public int getItemCount() {

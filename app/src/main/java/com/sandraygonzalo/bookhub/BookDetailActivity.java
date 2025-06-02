@@ -203,6 +203,16 @@ public class BookDetailActivity extends AppCompatActivity {
             });
         });
 
+        // VER USUARIO
+        TextView bookOwnerProfile = findViewById(R.id.viewUserButton);
+
+        bookOwnerProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(BookDetailActivity.this, OtherUserActivity.class);
+            intent.putExtra("userId", book.getOwnerId());
+            startActivity(intent);
+        });
+
+
     }
 }
 

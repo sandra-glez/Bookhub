@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<UserBook> bookList = new ArrayList<>();
-        UserBooksAdapter adapter = new UserBooksAdapter(bookList, this);
+        UserBooksAdapter adapter = new UserBooksAdapter(bookList, this, true);
         recyclerView.setAdapter(adapter);
 
         String uid = currentUser.getUid();
