@@ -1,7 +1,10 @@
 package com.sandraygonzalo.bookhub;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -127,5 +130,12 @@ public class OtherUserActivity extends AppCompatActivity {
                     statValue1.setText(String.valueOf(completed));
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error obteniendo intercambios", e));
+
+        // Estilo transparente para status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
+
 }

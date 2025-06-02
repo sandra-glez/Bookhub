@@ -1,6 +1,8 @@
 package com.sandraygonzalo.bookhub;
 
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -55,6 +57,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         loadCurrentProfileImage(); // Cargar imagen actual desde Firestore
+        // Estilo transparente para status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
 
     private void loadCurrentProfileImage() {

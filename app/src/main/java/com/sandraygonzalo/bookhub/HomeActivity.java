@@ -110,8 +110,21 @@ public class HomeActivity extends AppCompatActivity {
         Spinner conditionSpinner = findViewById(R.id.condition_spinner);
 
 // Opciones de filtro
-        String[] genres = {"Todos", "Ficción", "No ficción", "Romance", "Fantasía", "Ciencia ficción", "Misterio"};
-        String[] conditions = {"Todas", "Nuevo", "Buen estado", "Usado", "Dañado"};
+        String[] genres = {
+                "Género", // <-- opción por defecto
+                "Acción", "Aventura", "Biografía", "Ciencia", "Ciencia ficción",
+                "Clásicos", "Comedia", "Contemporáneo", "Crimen", "Cuento",
+                "Distopía", "Drama", "Educación", "Erótico", "Fantasía",
+                "Ficción histórica", "Filosofía", "Graphic novel", "Historia", "Infantil",
+                "Juvenil", "Misterio", "Paranormal", "Poesía", "Realismo mágico",
+                "Romance", "Suspense", "Terror", "Thriller", "Otros"
+        };
+
+        String[] conditions = {
+                "Estado", // <-- opción por defecto
+                "Como nuevo", "Muy buen estado", "Buen estado", "Usado pero decente", "Tocado pero usable"
+        };
+
 
 // Adaptadores
         ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genres);
@@ -146,22 +159,24 @@ public class HomeActivity extends AppCompatActivity {
         db.collection("userBooks")
                 .whereEqualTo("available", true)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addOnSuccessListener(snapshot -> {
                     List<UserBook> filteredList = new ArrayList<>();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+
+                    for (DocumentSnapshot doc : snapshot) {
                         UserBook book = doc.toObject(UserBook.class);
+                        if (book == null) continue;
 
-                        boolean matchesText = query.isEmpty() ||
-                                (book.getTitle() != null && book.getTitle().toLowerCase().contains(query.toLowerCase())) ||
-                                (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(query.toLowerCase()));
+                        boolean matchText = query.isEmpty()
+                                || containsIgnoreCase(book.getTitle(), query)
+                                || containsIgnoreCase(book.getAuthor(), query);
 
-                        boolean matchesGenre = genreFilter.equals("Todos") ||
-                                (book.getGenres() != null && book.getGenres().contains(genreFilter));
+                        boolean matchGenre = genreFilter.equals("Género")
+                                || (book.getGenres() != null && book.getGenres().contains(genreFilter));
 
-                        boolean matchesCondition = conditionFilter.equals("Todas") ||
-                                (book.getCondition() != null && book.getCondition().equalsIgnoreCase(conditionFilter));
+                        boolean matchCondition = conditionFilter.equals("Estado")
+                                || conditionEquals(book.getCondition(), conditionFilter);
 
-                        if (matchesText && matchesGenre && matchesCondition) {
+                        if (matchText && matchGenre && matchCondition) {
                             filteredList.add(book);
                         }
                     }
@@ -173,6 +188,16 @@ public class HomeActivity extends AppCompatActivity {
                     Log.e("Firestore", "Error", e);
                 });
     }
+
+    // Helpers
+    private boolean containsIgnoreCase(String text, String query) {
+        return text != null && text.toLowerCase().contains(query.toLowerCase());
+    }
+
+    private boolean conditionEquals(String a, String b) {
+        return a != null && a.equalsIgnoreCase(b);
+    }
+
 
 
     private void startActivityWithTransition(Class<?> target) {

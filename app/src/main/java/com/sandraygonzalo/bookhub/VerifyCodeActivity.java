@@ -1,7 +1,10 @@
 package com.sandraygonzalo.bookhub;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,14 +41,22 @@ public class VerifyCodeActivity extends AppCompatActivity {
             String code = codeEditText.getText().toString();
             if (verificationId != null && !code.isEmpty()) {
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-                mAuth.getCurrentUser().linkWithCredential(credential)
+                mAuth.getCurrentUser().reauthenticate(credential)
                         .addOnSuccessListener(result -> {
                             Intent intent = new Intent(VerifyCodeActivity.this, HomeActivity.class);
                             startActivity(intent);
                             finish();
                         })
-                        .addOnFailureListener(e -> Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this, "Código incorrecto: " + e.getMessage(), Toast.LENGTH_LONG).show());
+
             }
         });
+
+        // Estilo transparente para status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
 }

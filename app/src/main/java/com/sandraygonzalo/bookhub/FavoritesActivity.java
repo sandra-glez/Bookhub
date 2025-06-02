@@ -49,7 +49,7 @@ public class FavoritesActivity extends AppCompatActivity {
         }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_home); // ← cámbialo por la pestaña actual
+        bottomNavigationView.setSelectedItemId(R.id.nav_favorites);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

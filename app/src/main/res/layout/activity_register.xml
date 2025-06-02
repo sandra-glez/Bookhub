@@ -154,7 +154,8 @@ android:background="#688239">
             android:layout_marginBottom="0dp"
             android:text="Acepto los términos y condiciones y la política de privacidad"
             android:textSize="10sp"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:buttonTint="@color/verde"/>
 
         <Button
             android:id="@+id/registerButton"
