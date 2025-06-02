@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -129,6 +130,65 @@ public class ProfileActivity extends AppCompatActivity {
 
             return false;
         });
+
+        // STATS
+        TextView userFullName = findViewById(R.id.userFullName);
+        TextView statValue1 = findViewById(R.id.statValue1); // Intercambios
+        TextView statLabel1 = findViewById(R.id.statLabel1);
+        TextView statValue2 = findViewById(R.id.statValue2); // Rating
+        TextView statLabel2 = findViewById(R.id.statLabel2);
+        TextView statValue3 = findViewById(R.id.statValue3); // Libros
+        TextView statLabel3 = findViewById(R.id.statLabel3);
+
+// Etiquetas
+        statLabel1.setText("Intercambios");
+        statLabel2.setText("Valoración");
+        statLabel3.setText("Libros");
+
+// 1. Datos del usuario
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Mostrar nombre y apellido (los tienes como "firstName" y "lastName")
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        userFullName.setText((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : ""));
+
+                        // Rating
+                        Double avgRating = documentSnapshot.getDouble("rating.average");
+                        statValue2.setText(String.format(Locale.US, "%.1f/5", avgRating != null ? avgRating : 0.0));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al cargar perfil", e));
+
+// 2. Libros que ha subido
+        db.collection("userBooks")
+                .whereEqualTo("ownerId", uid)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int bookCount = querySnapshot.size();
+                    statValue3.setText(String.valueOf(bookCount));
+                })
+                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al contar libros", e));
+
+// 3. Intercambios completados
+        db.collection("exchanges")
+                .whereEqualTo("status", "completed")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int completedExchanges = 0;
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String user1Id = doc.getString("user1Id");
+                        String user2Id = doc.getString("user2Id");
+                        if (uid.equals(user1Id) || uid.equals(user2Id)) {
+                            completedExchanges++;
+                        }
+                    }
+                    statValue1.setText(String.valueOf(completedExchanges));
+                })
+                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al contar intercambios", e));
 
     }
     private void startActivityWithTransition(Class<?> target) {
