@@ -22,17 +22,20 @@
             android:text="Tu perfil"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="16dp"/>
 
         <!-- Imagen de perfil -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgProfile"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_user_avatar"
-            android:background="@drawable/circle_background"
-            android:layout_marginBottom="12dp" />
+            app:shapeAppearanceOverlay="@style/RoundedFullImage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Nombre -->
         <TextView
@@ -41,62 +44,66 @@
             android:layout_height="wrap_content"
             android:text="Nombre Apellido"
             android:textSize="18sp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="10dp"/>
 
         <!-- Botones de menú -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditProfile"
-            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Editar perfil"
-            app:iconPadding="8dp"
-            android:layout_marginBottom="8dp"
+            android:textColor="@color/menu_icon_color"
+            android:layout_marginBottom="5dp"
             app:iconGravity="textStart"
+            app:cornerRadius="24dp"
+            android:padding="15dp"
+            app:backgroundTint="@android:color/white"
+            android:elevation="2dp"
             android:gravity="start|center_vertical"
-            android:textAlignment="viewStart"
-            />
-
+            android:textAlignment="viewStart" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnExchangeHistory"
-            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Historial de intercambios"
-            app:iconPadding="8dp"
-            android:layout_marginBottom="8dp"
+            android:textColor="@color/menu_icon_color"
+            android:layout_marginBottom="5dp"
             app:iconGravity="textStart"
+            app:cornerRadius="24dp"
+            android:padding="15dp"
+            app:backgroundTint="@android:color/white"
+            android:elevation="2dp"
             android:gravity="start|center_vertical"
-            android:textAlignment="viewStart"
-            />
-
+            android:textAlignment="viewStart" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrivacySettings"
-            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ajustes de privacidad"
-            app:iconPadding="8dp"
-            android:layout_marginBottom="8dp"
+            android:text="Términos y condiciones"
+            android:textColor="@color/menu_icon_color"
+            android:layout_marginBottom="5dp"
             app:iconGravity="textStart"
+            app:cornerRadius="24dp"
+            android:padding="15dp"
+            app:backgroundTint="@android:color/white"
+            android:elevation="2dp"
             android:gravity="start|center_vertical"
-            android:textAlignment="viewStart"
-            />
-
-        <!-- Cerrar sesión (estilo diferente) -->
+            android:textAlignment="viewStart" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cerrar sesión"
-            android:textColor="@android:color/holo_red_dark"
-            android:iconTint="@android:color/holo_red_dark"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_marginTop="16dp"
+            android:textColor="@color/red"
+            android:layout_marginBottom="5dp"
             app:iconGravity="textStart"
+            app:cornerRadius="24dp"
+            android:padding="15dp"
+            app:backgroundTint="@android:color/white"
+            android:elevation="2dp"
             android:gravity="start|center_vertical"
-            android:textAlignment="viewStart"
-            />
+            android:textAlignment="viewStart" />
 
 
 

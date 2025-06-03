@@ -30,7 +30,10 @@ import android.widget.Toast;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private boolean isDebugMode;
+    private FirebaseFirestore db;
+    private EditText emailEditText, passwordEditText;
+    private Button loginButton;
+    private TextView registerTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,112 +41,20 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-        isDebugMode = isRunningOnEmulator(); // Cambia a true si quieres forzarlo manualmente
+        db = FirebaseFirestore.getInstance();
 
-        EditText emailEditText = findViewById(R.id.emailEditText);
-        EditText passwordEditText = findViewById(R.id.passwordEditText);
-        Button loginButton = findViewById(R.id.loginButton);
-        TextView registerTextView = findViewById(R.id.registerTextView);
+        emailEditText = findViewById(R.id.emailEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        loginButton = findViewById(R.id.loginButton);
+        registerTextView = findViewById(R.id.registerTextView);
 
-        loginButton.setOnClickListener(view -> {
-            if (isDebugMode) {
-                // 🔧 DEBUG: Login sin 2FA
-                mAuth.signInAnonymously()
-                        .addOnSuccessListener(authResult -> {
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
-                        })
-                        .addOnFailureListener(e ->
-                                Toast.makeText(LoginActivity.this, "Login anónimo fallido: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                        );
-                return;
-            }
+        loginButton.setOnClickListener(v -> iniciarLogin());
 
-            // 🔒 LOGIN NORMAL CON 2FA
-            String email = emailEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(LoginActivity.this, "Por favor completa los campos", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            String uid = user.getUid();
-
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            db.collection("users").document(uid).get()
-                                    .addOnSuccessListener(document -> {
-                                        String phone = document.getString("phone");
-                                        if (phone != null && !phone.isEmpty()) {
-                                            Log.d("2FA", "Iniciando verificación por SMS con número: " + phone);
-
-                                            PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
-                                                    .setPhoneNumber(phone)
-                                                    .setTimeout(60L, TimeUnit.SECONDS)
-                                                    .setActivity(this)
-                                                    .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                                        @Override
-                                                        public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-                                                            Log.d("2FA", "✅ Verificación automática completada");
-
-                                                            // Solo reautenticamos si el número coincide
-                                                            mAuth.getCurrentUser().reauthenticate(credential)
-                                                                    .addOnSuccessListener(result -> {
-                                                                        FirebaseFirestore.getInstance().collection("users").document(uid)
-                                                                                .update("isPhoneVerified", true)
-                                                                                .addOnSuccessListener(aVoid -> {
-                                                                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                                                                    finish();
-                                                                                });
-                                                                    })
-                                                                    .addOnFailureListener(e -> {
-                                                                        Log.e("2FA", "❌ Error en reauth automática: " + e.getMessage());
-                                                                        FirebaseAuth.getInstance().signOut();
-                                                                    });
-                                                        }
-
-                                                        @Override
-                                                        public void onVerificationFailed(@NonNull FirebaseException e) {
-                                                            Log.e("2FA", "❌ Falló la verificación por SMS: " + e.getMessage());
-                                                            Toast.makeText(LoginActivity.this, "Error al verificar: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                                            FirebaseAuth.getInstance().signOut();
-                                                        }
-
-                                                        @Override
-                                                        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                                                            Log.d("2FA", "📩 Código enviado correctamente");
-                                                            Intent intent = new Intent(LoginActivity.this, VerifyCodeActivity.class);
-                                                            intent.putExtra("verificationId", verificationId);
-                                                            intent.putExtra("userId", uid);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        }
-                                                    })
-                                                    .build();
-
-                                            PhoneAuthProvider.verifyPhoneNumber(options);
-
-                                        } else {
-                                            Toast.makeText(LoginActivity.this, "No se encontró número de teléfono", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        registerTextView.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
-        registerTextView.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
-
+        // Transparencia para status bar (estético)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(Color.TRANSPARENT);
@@ -151,14 +62,79 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // ✅ Detección automática de emulador
-    private boolean isRunningOnEmulator() {
-        return Build.FINGERPRINT.contains("generic")
-                || Build.MODEL.contains("google_sdk")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-                || "google_sdk".equals(Build.PRODUCT);
+    private void iniciarLogin() {
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = authResult.getUser();
+                    if (user == null) {
+                        Toast.makeText(this, "Error de autenticación", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String uid = user.getUid();
+
+                    db.collection("users").document(uid).get()
+                            .addOnSuccessListener(document -> {
+                                String phone = document.getString("phone");
+                                if (phone == null || phone.isEmpty()) {
+                                    Toast.makeText(this, "No hay teléfono registrado", Toast.LENGTH_SHORT).show();
+                                    mAuth.signOut();
+                                    return;
+                                }
+
+                                enviarCodigoSMS(phone, email, password);
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Login fallido: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void enviarCodigoSMS(String phone, String email, String password) {
+        PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
+                .setPhoneNumber(phone)
+                .setTimeout(60L, TimeUnit.SECONDS)
+                .setActivity(this)
+                .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                        // Ignoramos la verificación automática
+                        Log.d("2FA", "✅ Verificación automática detectada, ignorada");
+                    }
+
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+                        Log.e("2FA", "❌ Verificación fallida: " + e.getMessage());
+                        Toast.makeText(LoginActivity.this, "Error al enviar SMS: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        mAuth.signOut();
+                    }
+
+                    @Override
+                    public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                        Log.d("2FA", "📩 Código enviado a " + phone);
+                        Intent intent = new Intent(LoginActivity.this, VerifyCodeActivity.class);
+                        intent.putExtra("verificationId", verificationId);
+                        intent.putExtra("email", email);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .build();
+
+        PhoneAuthProvider.verifyPhoneNumber(options);
     }
 }
+
