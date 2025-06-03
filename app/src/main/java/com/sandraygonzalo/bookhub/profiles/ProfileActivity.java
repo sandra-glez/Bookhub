@@ -190,22 +190,28 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al contar libros", e));
 
 
-// 3. Intercambios completados
-        db.collection("exchanges")
-                .whereEqualTo("status", "completed")
+        db.collection("users")
+                .document(uid)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    int completedExchanges = 0;
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        String user1Id = doc.getString("user1Id");
-                        String user2Id = doc.getString("user2Id");
-                        if (uid.equals(user1Id) || uid.equals(user2Id)) {
-                            completedExchanges++;
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Nombre completo
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        userFullName.setText((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : ""));
+
+                        // Valoración promedio
+                        Double avgRating = documentSnapshot.getDouble("rating.average");
+                        statValue2.setText(String.format(Locale.US, "%.1f/5", avgRating != null ? avgRating : 0.0));
+
+                        // Intercambios completados (nuevo)
+                        Long totalExchanges = documentSnapshot.getLong("rating.totalExchanges");
+                        statValue1.setText(String.valueOf(totalExchanges != null ? totalExchanges : 0));
                     }
-                    statValue1.setText(String.valueOf(completedExchanges));
                 })
-                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al contar intercambios", e));
+                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al cargar perfil", e));
+
+
 
     }
 

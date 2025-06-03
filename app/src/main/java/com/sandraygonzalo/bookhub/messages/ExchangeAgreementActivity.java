@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.WriteBatch;
 import com.sandraygonzalo.bookhub.R;
 
 import java.util.ArrayList;
@@ -102,15 +106,62 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
         db.collection("exchanges").document(exchangeId)
                 .get()
                 .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        Boolean u1 = doc.getBoolean("user1Confirmed");
-                        Boolean u2 = doc.getBoolean("user2Confirmed");
+                    if (!doc.exists()) return;
 
-                        if (Boolean.TRUE.equals(u1) && Boolean.TRUE.equals(u2)) {
-                            db.collection("exchanges").document(exchangeId)
-                                    .update("status", "agreed");
+                    Boolean u1 = doc.getBoolean("user1Confirmed");
+                    Boolean u2 = doc.getBoolean("user2Confirmed");
+
+                    if (Boolean.TRUE.equals(u1) && Boolean.TRUE.equals(u2)) {
+                        String bookOfferedId = doc.getString("bookOfferedId");
+                        String bookRequestedId = doc.getString("bookRequestedId");
+                        String user1Id = doc.getString("user1Id");
+                        String user2Id = doc.getString("user2Id");
+
+                        // Eliminar ambos libros
+                        if (bookOfferedId != null) {
+                            db.collection("userBooks").document(bookOfferedId)
+                                    .delete()
+                                    .addOnSuccessListener(unused -> Log.d("Exchange", "Libro ofrecido eliminado"))
+                                    .addOnFailureListener(e -> Log.e("Exchange", "Error al eliminar libro ofrecido", e));
                         }
 
+                        if (bookRequestedId != null) {
+                            db.collection("userBooks").document(bookRequestedId)
+                                    .delete()
+                                    .addOnSuccessListener(unused -> Log.d("Exchange", "Libro solicitado eliminado"))
+                                    .addOnFailureListener(e -> Log.e("Exchange", "Error al eliminar libro solicitado", e));
+                        }
+
+                        // Actualizar estado del intercambio y fecha
+                        db.collection("exchanges").document(exchangeId)
+                                .update(
+                                        "status", "agreed",
+                                        "completionDate", FieldValue.serverTimestamp()
+                                )
+                                .addOnSuccessListener(unused -> {
+                                    // Incrementar contador de intercambios para ambos usuarios
+                                    db.collection("users").document(user1Id)
+                                            .update("rating.totalExchanges", FieldValue.increment(1));
+                                    db.collection("users").document(user2Id)
+                                            .update("rating.totalExchanges", FieldValue.increment(1));
+
+                                    // Ir al chat
+                                    Intent intent = new Intent(this, ChatActivity.class);
+                                    intent.putExtra("chatId", exchangeId);
+                                    intent.putExtra("otherUserId", otherUserId);
+                                    intent.putExtra("bookCoverUrl", getIntent().getStringExtra("bookCoverUrl"));
+                                    intent.putExtra("title", getIntent().getStringExtra("title"));
+                                    intent.putExtra("author", getIntent().getStringExtra("author"));
+                                    intent.putExtra("exchangeConfirmed", true);
+                                    startActivity(intent);
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Error al actualizar intercambio", Toast.LENGTH_LONG).show();
+                                    Log.e("Exchange", "Error al actualizar estado", e);
+                                });
+                    } else {
+                        // Solo volver al chat
                         Intent intent = new Intent(this, ChatActivity.class);
                         intent.putExtra("chatId", exchangeId);
                         intent.putExtra("otherUserId", otherUserId);
@@ -123,6 +174,8 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     private void loadExchangeInfo() {
         db.collection("exchanges").document(exchangeId)
