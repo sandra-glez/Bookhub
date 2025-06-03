@@ -75,15 +75,15 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
             chip.setText(genre);
             chip.setBackgroundResource(R.drawable.chip_background_checked);
             chip.setTextColor(Color.WHITE);
-            chip.setTextSize(12f);
-            chip.setPadding(28, 10, 28, 10);
+            chip.setTextSize(10f);
+            chip.setPadding(20, 10, 20, 10);
             chip.setTypeface(Typeface.DEFAULT_BOLD);
 
             FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(12, 8, 12, 8);
+            params.setMargins(10, 8, 10, 8);
             chip.setLayoutParams(params);
 
             holder.genreChipContainer.addView(chip);
