@@ -4,7 +4,7 @@
     style="@style/Widget.MaterialComponents.Chip.Choice"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="2dp"
     android:checkable="true"
     app:chipBackgroundColor="@color/chip_background_selector"
     android:textColor="@color/chip_text_selector" />
