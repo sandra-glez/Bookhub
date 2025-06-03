@@ -1,10 +1,9 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.home;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import com.sandraygonzalo.bookhub.R;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,7 +25,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.sandraygonzalo.bookhub.R;
+import com.sandraygonzalo.bookhub.auth.MainActivity;
+import com.sandraygonzalo.bookhub.messages.MessagesActivity;
+import com.sandraygonzalo.bookhub.profiles.ProfileActivity;
+import com.sandraygonzalo.bookhub.profiles.UserBook;
 
 import java.util.ArrayList;
 import java.util.List;

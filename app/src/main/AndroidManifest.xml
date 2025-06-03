@@ -17,44 +17,44 @@
         android:theme="@style/Theme.Material3.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".OtherUserActivity"
+            android:name=".profiles.OtherUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ExchangeAgreementActivity"
+            android:name=".messages.ExchangeAgreementActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatActivity"
+            android:name=".messages.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".BookDetailActivity"
+            android:name=".home.BookDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".AddBookActivity"
+            android:name=".profiles.AddBookActivity"
             android:exported="false" />
         <activity
-            android:name=".MessagesActivity"
+            android:name=".messages.MessagesActivity"
             android:exported="false" />
         <activity
-            android:name=".FavoritesActivity"
+            android:name=".home.FavoritesActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".profiles.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".auth.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".VerifyCodeActivity"
+            android:name=".auth.VerifyCodeActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".profiles.ProfileActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".auth.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,13 +63,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.MainActivity"
             android:exported="true" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".auth.LoginActivity"
             android:exported="false" />
     </application>
 

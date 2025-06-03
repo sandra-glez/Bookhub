@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.auth;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sandraygonzalo.bookhub.home.HomeActivity;
+import com.sandraygonzalo.bookhub.R;
 
 public class SplashActivity extends AppCompatActivity {
     @Override

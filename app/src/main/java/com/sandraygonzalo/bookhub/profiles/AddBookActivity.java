@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.profiles;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,11 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -25,6 +21,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sandraygonzalo.bookhub.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,7 +181,7 @@ public class AddBookActivity extends AppCompatActivity {
         bookData.put("author", author);
         bookData.put("description", description);
         bookData.put("condition", condition);
-        bookData.put("genres", selectedGenres); // ahora usamos selectedGenres directamente
+        bookData.put("genres", selectedGenres);
         bookData.put("coverImage", imageUrl);
         bookData.put("ownerId", uid);
         bookData.put("available", true);
@@ -194,10 +191,12 @@ public class AddBookActivity extends AppCompatActivity {
                 .add(bookData)
                 .addOnSuccessListener(documentReference -> {
                     String docId = documentReference.getId();
-                    documentReference.update("id", docId) // importante para que funcione el botón de eliminar luego
+                    documentReference.update("id", docId)
                             .addOnSuccessListener(unused -> {
                                 Toast.makeText(this, "Libro guardado", Toast.LENGTH_SHORT).show();
-                                finish(); // volver al perfil
+                                setResult(RESULT_OK);
+                                finish();
+
                             });
                 });
 

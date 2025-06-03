@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.profiles;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -9,17 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.sandraygonzalo.bookhub.R;
 
 import java.util.ArrayList;
 import java.util.List;

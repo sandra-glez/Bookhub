@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.messages;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.Timestamp;
+import com.sandraygonzalo.bookhub.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

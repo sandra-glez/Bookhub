@@ -1,11 +1,10 @@
-package com.sandraygonzalo.bookhub;
-
-import static android.app.Activity.RESULT_OK;
+package com.sandraygonzalo.bookhub.auth;
 
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -18,16 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.chip.ChipGroup;
@@ -35,6 +30,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.sandraygonzalo.bookhub.R;
+
 import android.Manifest;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +55,7 @@ public class OnboardingActivity extends AppCompatActivity {
             "Acción", "Aventura", "Biografía", "Ciencia", "Ciencia ficción",
             "Clásicos", "Comedia", "Contemporáneo", "Crimen", "Cuento",
             "Distopía", "Drama", "Educación", "Erótico", "Fantasía",
-            "Ficción histórica", "Filosofía", "Graphic novel", "Historia", "Infantil",
+            "Ficción histórica", "Filosofía", "Novela", "Historia", "Infantil",
             "Juvenil", "Misterio", "Paranormal", "Poesía", "Realismo mágico",
             "Romance", "Suspense", "Terror", "Thriller", "Otros"
 
@@ -83,12 +80,10 @@ public class OnboardingActivity extends AppCompatActivity {
         storageRef = FirebaseStorage.getInstance().getReference("profilePictures");
 
         // Poblar ChipGroup con géneros
+        LayoutInflater inflater = LayoutInflater.from(this);
         for (String genre : genres) {
-            Chip chip = new Chip(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.item_chip_choice, genreChipGroup, false);
             chip.setText(genre);
-            chip.setCheckable(true);
-            chip.setChipBackgroundColorResource(R.color.chip_background);
-            chip.setTextColor(getResources().getColor(R.color.chip_text));
 
             chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 int selectedCount = 0;
@@ -97,14 +92,14 @@ public class OnboardingActivity extends AppCompatActivity {
                     if (c.isChecked()) selectedCount++;
                 }
                 if (selectedCount > 4) {
-                    // Si se seleccionan más de 4, desmarcar el chip actual y mostrar mensaje
                     chip.setChecked(false);
                     Toast.makeText(this, "Solo puedes seleccionar hasta 4 géneros", Toast.LENGTH_SHORT).show();
                 }
             });
 
-            genreChipGroup.addView(chip);
+            genreChipGroup.addView(chip); // ✅ Solo una vez
         }
+
 
 
         // Selección de imagen

@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.auth;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -7,13 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
+import com.sandraygonzalo.bookhub.home.HomeActivity;
+import com.sandraygonzalo.bookhub.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;

@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.auth;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -11,6 +11,9 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.sandraygonzalo.bookhub.home.HomeActivity;
+import com.sandraygonzalo.bookhub.R;
+
 import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 
@@ -23,8 +26,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
 

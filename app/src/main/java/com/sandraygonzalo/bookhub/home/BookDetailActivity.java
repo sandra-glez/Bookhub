@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.home;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -25,6 +24,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
+import com.sandraygonzalo.bookhub.R;
+import com.sandraygonzalo.bookhub.messages.ChatActivity;
+import com.sandraygonzalo.bookhub.profiles.OtherUserActivity;
+import com.sandraygonzalo.bookhub.profiles.UserBook;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;

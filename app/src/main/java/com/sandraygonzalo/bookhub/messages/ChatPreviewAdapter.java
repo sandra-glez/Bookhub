@@ -1,6 +1,5 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.messages;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import android.content.Context;
 
 import com.google.firebase.Timestamp;
+import com.sandraygonzalo.bookhub.R;
 import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.List;

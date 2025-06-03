@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.messages;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +14,13 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
+import com.sandraygonzalo.bookhub.R;
+
 import java.util.Date;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import android.util.Log;
 import android.widget.*;
 
@@ -45,7 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(com.sandraygonzalo.bookhub.R.layout.activity_chat);
 
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -59,13 +60,13 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        recyclerView = findViewById(R.id.chatRecyclerView);
-        messageInput = findViewById(R.id.messageInput);
-        sendButton = findViewById(R.id.sendButton);
-        btnRequestExchange = findViewById(R.id.btnRequestExchange);
-        chatTitle = findViewById(R.id.bookTitleHeader);
-        bookCover = findViewById(R.id.bookCoverSmall);
-        exchangeStatusText = findViewById(R.id.exchangeStatusText); // ✅ nuevo
+        recyclerView = findViewById(com.sandraygonzalo.bookhub.R.id.chatRecyclerView);
+        messageInput = findViewById(com.sandraygonzalo.bookhub.R.id.messageInput);
+        sendButton = findViewById(com.sandraygonzalo.bookhub.R.id.sendButton);
+        btnRequestExchange = findViewById(com.sandraygonzalo.bookhub.R.id.btnRequestExchange);
+        chatTitle = findViewById(com.sandraygonzalo.bookhub.R.id.bookTitleHeader);
+        bookCover = findViewById(com.sandraygonzalo.bookhub.R.id.bookCoverSmall);
+        exchangeStatusText = findViewById(com.sandraygonzalo.bookhub.R.id.exchangeStatusText); // ✅ nuevo
 
         messageList = new ArrayList<>();
         chatAdapter = new ChatAdapter(messageList, currentUserId);
@@ -88,7 +89,7 @@ public class ChatActivity extends AppCompatActivity {
         loadExchangeStatus(); // ✅ Muestra mensaje si está acordado
 
         // BOTÓN VOLVER
-        ImageButton backButton = findViewById(R.id.backButton);
+        ImageButton backButton = findViewById(com.sandraygonzalo.bookhub.R.id.backButton);
 
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(ChatActivity.this, MessagesActivity.class); // <-- cambia esto por el nombre real de tu pantalla de chats
@@ -186,10 +187,10 @@ public class ChatActivity extends AppCompatActivity {
                                 if (coverUrl != null && !coverUrl.isEmpty()) {
                                     Glide.with(this)
                                             .load(coverUrl)
-                                            .placeholder(R.drawable.placeholder)
+                                            .placeholder(com.sandraygonzalo.bookhub.R.drawable.placeholder)
                                             .into(bookCover);
                                 } else {
-                                    bookCover.setImageResource(R.drawable.placeholder);
+                                    bookCover.setImageResource(com.sandraygonzalo.bookhub.R.drawable.placeholder);
                                 }
                             })
                             .addOnFailureListener(e -> Log.e("CHAT", "Error al obtener userBook", e));

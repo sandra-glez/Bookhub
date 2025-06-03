@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.auth;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -7,10 +7,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
+import com.sandraygonzalo.bookhub.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

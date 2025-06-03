@@ -1,4 +1,4 @@
-package com.sandraygonzalo.bookhub;
+package com.sandraygonzalo.bookhub.profiles;
 
 import com.google.firebase.Timestamp;
 import java.util.List;
