@@ -68,11 +68,10 @@ public class OtherUserActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     Log.d(TAG, "Usuario encontrado: " + doc.getId());
                     String imageUrl = doc.getString("profilePicture");
-                    String firstName = doc.getString("firstName");
-                    String lastName = doc.getString("lastName");
+                    String username = doc.getString("username");
                     Double rating = doc.getDouble("rating.average");
 
-                    Log.d(TAG, "Nombre: " + firstName + " " + lastName + " - Rating: " + rating);
+                    Log.d(TAG, "Nombre: " + username + " - Rating: " + rating);
 
                     if (imageUrl != null && !imageUrl.isEmpty()) {
                         Glide.with(this).load(imageUrl).into(imgProfile);
@@ -80,7 +79,7 @@ public class OtherUserActivity extends AppCompatActivity {
                         imgProfile.setImageResource(R.drawable.ic_user_avatar);
                     }
 
-                    userFullName.setText((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : ""));
+                    userFullName.setText(username);
                     statValue2.setText(String.format(Locale.US, "%.1f/5", rating != null ? rating : 0.0));
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error obteniendo usuario", e));

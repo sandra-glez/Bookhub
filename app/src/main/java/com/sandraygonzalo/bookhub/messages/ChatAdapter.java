@@ -50,13 +50,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messageList.get(position);
-        String time = formatTimestamp(message.getSentAt());
+        String time = formatTimestamp(message.getTimestamp());
 
         if (holder instanceof SentMessageViewHolder) {
-            ((SentMessageViewHolder) holder).textMessage.setText(message.getContent());
+            ((SentMessageViewHolder) holder).textMessage.setText(message.getText());
             ((SentMessageViewHolder) holder).textTime.setText(time);
         } else {
-            ((ReceivedMessageViewHolder) holder).textMessage.setText(message.getContent());
+            ((ReceivedMessageViewHolder) holder).textMessage.setText(message.getText());
             ((ReceivedMessageViewHolder) holder).textTime.setText(time);
         }
     }

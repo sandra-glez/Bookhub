@@ -220,12 +220,11 @@ public class HomeActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String firstName = documentSnapshot.getString("firstName");
-                        String lastName = documentSnapshot.getString("lastName");
+                        String username = documentSnapshot.getString("username");
                         String location = documentSnapshot.getString("location");
                         String profilePictureUrl = documentSnapshot.getString("profilePicture");
 
-                        userNameText.setText("Hola, " + firstName + " " + lastName);
+                        userNameText.setText("Hola, " + username);
                         userLocationText.setText("📍 " + (location != null ? location : "Sin ubicación"));
 
                         if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {

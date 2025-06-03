@@ -3,6 +3,7 @@ package com.sandraygonzalo.bookhub.messages;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,6 +77,12 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
         btnConfirmExchange.setOnClickListener(v -> confirmExchange());
 
         loadExchangeInfo();
+
+        // Hacer la barra de estado transparente
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
 
     @Override

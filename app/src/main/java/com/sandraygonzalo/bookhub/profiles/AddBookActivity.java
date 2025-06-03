@@ -175,7 +175,6 @@ public class AddBookActivity extends AppCompatActivity {
         String description = descriptionEditText.getText().toString().trim();
         String condition = selectedCondition;
 
-
         Map<String, Object> bookData = new HashMap<>();
         bookData.put("title", title);
         bookData.put("author", author);
@@ -190,16 +189,14 @@ public class AddBookActivity extends AppCompatActivity {
         db.collection("userBooks")
                 .add(bookData)
                 .addOnSuccessListener(documentReference -> {
-                    String docId = documentReference.getId();
-                    documentReference.update("id", docId)
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Libro guardado", Toast.LENGTH_SHORT).show();
-                                setResult(RESULT_OK);
-                                finish();
-
-                            });
+                    Toast.makeText(this, "Libro guardado", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al guardar el libro", Toast.LENGTH_SHORT).show();
                 });
-
     }
+
 }
 

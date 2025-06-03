@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class OnboardingActivity extends AppCompatActivity {
 
-    private EditText usernameInput, firstNameInput, lastNameInput, locationInput, bioInput;
+    private EditText usernameInput, locationInput;
     private ImageView profileImage;
     private ChipGroup genreChipGroup;
     private Uri imageUri = null;
@@ -67,10 +67,7 @@ public class OnboardingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_onboarding);
 
         usernameInput = findViewById(R.id.usernameInput);
-        firstNameInput = findViewById(R.id.firstNameInput);
-        lastNameInput = findViewById(R.id.lastNameInput);
         locationInput = findViewById(R.id.locationInput);
-        bioInput = findViewById(R.id.bioInput);
         profileImage = findViewById(R.id.profileImage);
         genreChipGroup = findViewById(R.id.genreChipGroup);
         Button saveButton = findViewById(R.id.saveButton);
@@ -217,10 +214,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("username", username);
-        userUpdates.put("firstName", firstNameInput.getText().toString().trim());
-        userUpdates.put("lastName", lastNameInput.getText().toString().trim());
         userUpdates.put("location", locationInput.getText().toString().trim());
-        userUpdates.put("bio", bioInput.getText().toString().trim());
         userUpdates.put("preferences", selectedGenres);
 
         if (imageUri != null) {

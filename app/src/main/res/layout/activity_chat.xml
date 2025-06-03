@@ -57,9 +57,9 @@
             android:src="@drawable/placeholder" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="161dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:orientation="vertical">
 
             <TextView
@@ -67,16 +67,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nombre libro"
-                android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/bookAuthorHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Autor apellido"
-                android:textSize="14sp"
-                android:textColor="@color/gray" />
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <Button
@@ -84,9 +84,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Solicitar intercambio"
+            android:padding="12dp"
+            android:layout_marginRight="10dp"
             android:backgroundTint="@color/verde"
             android:textColor="@android:color/white"
-            android:textSize="12sp"/>
+            android:textSize="11sp"/>
         <TextView
             android:id="@+id/exchangeStatusText"
             android:layout_width="wrap_content"
@@ -95,7 +97,7 @@
             android:textStyle="bold"
             android:textColor="@color/verde"
             android:visibility="gone"
-            android:textSize="16sp" />
+            android:textSize="12sp" />
 
 
 

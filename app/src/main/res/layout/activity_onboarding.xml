@@ -72,33 +72,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="22dp" />
 
-        <EditText
-            android:id="@+id/firstNameInput"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:padding="16dp"
-            android:textSize="12sp"
-            android:background="@drawable/edit_text_bg"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp"
-            android:hint="Nombre"
-            app:layout_constraintTop_toBottomOf="@id/usernameInput" />
-
-        <EditText
-            android:id="@+id/lastNameInput"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Apellidos"
-            android:inputType="textPersonName"
-            android:padding="16dp"
-            android:textSize="12sp"
-            android:background="@drawable/edit_text_bg"
-            app:layout_constraintTop_toBottomOf="@id/firstNameInput"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp" />
 
         <EditText
             android:id="@+id/locationInput"
@@ -110,24 +83,7 @@
             android:padding="16dp"
             android:textSize="12sp"
             android:background="@drawable/edit_text_bg"
-            app:layout_constraintTop_toBottomOf="@id/lastNameInput"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp" />
-
-        <EditText
-            android:id="@+id/bioInput"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Biografía breve"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:maxLines="5"
-            android:gravity="top|start"
-            android:padding="16dp"
-            android:textSize="12sp"
-            android:background="@drawable/edit_text_bg"
-            app:layout_constraintTop_toBottomOf="@id/locationInput"
+            app:layout_constraintTop_toBottomOf="@id/usernameInput"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp" />
@@ -141,7 +97,7 @@
             android:textColor="#252529"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/bioInput"
+            app:layout_constraintTop_toBottomOf="@id/locationInput"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp" />
 

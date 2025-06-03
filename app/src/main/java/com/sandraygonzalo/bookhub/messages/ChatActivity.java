@@ -1,5 +1,7 @@
 package com.sandraygonzalo.bookhub.messages;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -97,6 +99,12 @@ public class ChatActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        // Hacer la barra de estado transparente
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
 
     }
 
@@ -200,7 +208,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void loadMessages() {
-        messagesRef.orderBy("sentAt", Query.Direction.ASCENDING)
+        messagesRef.orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshots, error) -> {
                     if (snapshots == null || snapshots.isEmpty()) return;
                     messageList.clear();

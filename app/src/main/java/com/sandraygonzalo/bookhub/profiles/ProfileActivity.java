@@ -196,9 +196,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Nombre completo
-                        String firstName = documentSnapshot.getString("firstName");
-                        String lastName = documentSnapshot.getString("lastName");
-                        userFullName.setText((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : ""));
+                        String username = documentSnapshot.getString("username");
+                        userFullName.setText(username);
 
                         // Valoración promedio
                         Double avgRating = documentSnapshot.getDouble("rating.average");

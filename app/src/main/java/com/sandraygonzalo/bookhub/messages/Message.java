@@ -6,8 +6,8 @@ import com.google.firebase.Timestamp;
 public class Message {
 
     private String senderId;
-    private String content;
-    private Timestamp sentAt;
+    private String text;
+    private Timestamp timestamp;
     private String type;
 
     // Constructor vacío requerido por Firebase
@@ -15,25 +15,27 @@ public class Message {
     }
 
     // Constructor personalizado
-    public Message(String senderId, String content, Timestamp sentAt, String type) {
+    public Message(String senderId, String text, Timestamp timestamp, String type) {
         this.senderId = senderId;
-        this.content = content;
-        this.sentAt = sentAt;
+        this.text = text;
+        this.timestamp = timestamp;
         this.type = type;
     }
 
-    // Getters (Firebase los necesita para mapear los datos)
+    // Getters
     public String getSenderId() { return senderId; }
-    public String getContent() { return content; }
-    public Timestamp getSentAt() { return sentAt; }
+    public String getText() { return text; }
+    public Timestamp getTimestamp() { return timestamp; }
     public String getType() { return type; }
 
-    // Opcional: Setters (si necesitas actualizar valores)
+    // Setters
     public void setSenderId(String senderId) { this.senderId = senderId; }
-    public void setContent(String content) { this.content = content; }
-    public void setSentAt(Timestamp sentAt) { this.sentAt = sentAt; }
+    public void setText(String text) { this.text = text; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
     public void setType(String type) { this.type = type; }
 }
+
+
 
 
 

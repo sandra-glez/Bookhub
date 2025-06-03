@@ -275,11 +275,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Campos definidos en el modelo
         userData.put("username", "");  // Se completará en onboarding
-        userData.put("firstName", "");
-        userData.put("lastName", "");
         userData.put("email", user.getEmail());
         userData.put("location", "");
-        userData.put("bio", "");
         userData.put("profilePicture", user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : "");
 
         // Campo adicional personalizado
@@ -311,6 +308,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Error al guardar en Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 }
 
