@@ -110,12 +110,21 @@
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="3dp"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
                 android:padding="16dp"
                 android:textSize="13sp"
                 android:background="@drawable/edit_text_bg" />
+
+            <TextView
+                android:id="@+id/forgotPasswordTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Olvidaste tu contraseña?"
+                android:textColor="#838589"
+                android:layout_marginLeft="4dp"
+                android:textSize="11dp"/>
 
             <Button
                 android:id="@+id/loginButton"

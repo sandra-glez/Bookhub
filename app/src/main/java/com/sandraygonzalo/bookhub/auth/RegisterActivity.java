@@ -274,28 +274,22 @@ public class RegisterActivity extends AppCompatActivity {
         Map<String, Object> userData = new HashMap<>();
 
         // Campos definidos en el modelo
+        userData.put("id", user.getUid()); // ← ID como campo explícito
         userData.put("username", "");  // Se completará en onboarding
         userData.put("email", user.getEmail());
         userData.put("location", "");
         userData.put("profilePicture", user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : "");
-
-        // Campo adicional personalizado
         userData.put("phone", phone);
 
-        // Campos estructurados
         userData.put("preferences", new ArrayList<String>());
+        userData.put("favorites", new ArrayList<String>());
 
         Map<String, Object> rating = new HashMap<>();
         rating.put("average", 0.0);
         rating.put("totalExchanges", 0);
         userData.put("rating", rating);
 
-        userData.put("booksAvailable", new ArrayList<String>());
-        userData.put("exchangeHistory", new ArrayList<String>());
-        userData.put("favorites", new ArrayList<String>());
-        userData.put("notificationsEnabled", true);
-
-        // Guardar en Firestore
+        // Guardar en Firestore con UID como ID del documento
         db.collection("users").document(user.getUid())
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
