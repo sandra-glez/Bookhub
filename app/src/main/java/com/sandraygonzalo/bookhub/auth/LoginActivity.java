@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
         forgotPasswordTextView.setOnClickListener(v -> mostrarDialogoRecuperacion());
 
-        // Transparencia para status bar (estético)
+        // BARRA TRANSPARENTE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(Color.TRANSPARENT);
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Botón "Enviar"
+        // ENVIAR
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         if (positiveButton != null) {
             positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde));
@@ -108,14 +108,12 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        // Botón "Cancelar"
+        // CANCELAR
         Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         if (negativeButton != null) {
             negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde));
         }
     }
-
-
     private void enviarEmailRecuperacion(String email) {
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
@@ -126,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void iniciarLogin() {
         String email = emailEditText.getText().toString().trim();
