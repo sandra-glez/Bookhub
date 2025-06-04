@@ -1,5 +1,6 @@
 package com.sandraygonzalo.bookhub.profiles;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.gson.Gson;
 import com.sandraygonzalo.bookhub.R;
+import com.sandraygonzalo.bookhub.home.BookDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,15 @@ public class OtherUserActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewBooks);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         List<UserBook> bookList = new ArrayList<>();
-        UserBooksAdapter adapter = new UserBooksAdapter(bookList, this, false);
+        UserBooksAdapter adapter = new UserBooksAdapter(bookList, this, false, new UserBooksAdapter.OnBookClickListener() {
+            @Override
+            public void onBookClick(UserBook book) {
+                Intent intent = new Intent(OtherUserActivity.this, BookDetailActivity.class);
+                intent.putExtra("book", new Gson().toJson(book));
+                startActivity(intent);
+            }
+        });
+
         recyclerView.setAdapter(adapter);
 
         TextView statValue1 = findViewById(R.id.statValue1);

@@ -200,8 +200,6 @@ public class HomeActivity extends AppCompatActivity {
         return a != null && a.equalsIgnoreCase(b);
     }
 
-
-
     private void startActivityWithTransition(Class<?> target) {
         Intent intent = new Intent(HomeActivity.this, target);
         startActivity(intent);

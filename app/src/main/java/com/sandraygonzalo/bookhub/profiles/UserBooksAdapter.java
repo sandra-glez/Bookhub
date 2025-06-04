@@ -28,6 +28,15 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
     private Context context;
     private boolean isOwner;
 
+    private OnBookClickListener clickListener;
+
+    public UserBooksAdapter(List<UserBook> bookList, Context context, boolean isOwner, OnBookClickListener clickListener) {
+        this.bookList = bookList;
+        this.context = context;
+        this.isOwner = isOwner;
+        this.clickListener = clickListener;
+    }
+
     public UserBooksAdapter(List<UserBook> bookList, Context context, boolean isOwner) {
         this.bookList = bookList;
         this.context = context;
@@ -120,6 +129,13 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
             holder.deleteButton.setVisibility(View.GONE);
             holder.deleteButton.setOnClickListener(null);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onBookClick(book);
+            }
+        });
+
     }
 
 
@@ -127,6 +143,11 @@ public class UserBooksAdapter extends RecyclerView.Adapter<UserBooksAdapter.Book
     public int getItemCount() {
         return bookList.size();
     }
+
+    public interface OnBookClickListener {
+        void onBookClick(UserBook book);
+    }
+
 }
 
 

@@ -17,6 +17,7 @@ import com.sandraygonzalo.bookhub.R;
 
 import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,27 +71,51 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     private void mostrarDialogoRecuperacion() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         builder.setTitle("Recuperar contraseña");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(60, 40, 60, 10);
 
         final EditText emailInput = new EditText(this);
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailInput.setHint("Introduce tu correo electrónico");
-        builder.setView(emailInput);
+        emailInput.setBackgroundResource(R.drawable.edit_text_bg);
+        emailInput.setPadding(40, 30, 40, 30);
 
-        builder.setPositiveButton("Enviar", (dialog, which) -> {
-            String email = emailInput.getText().toString().trim();
-            if (!email.isEmpty()) {
-                enviarEmailRecuperacion(email);
-            } else {
-                Toast.makeText(LoginActivity.this, "El campo no puede estar vacío", Toast.LENGTH_SHORT).show();
-            }
-        });
+        layout.addView(emailInput);
+        builder.setView(layout);
 
+        builder.setPositiveButton("Enviar", null); // se asigna luego
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Botón "Enviar"
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (positiveButton != null) {
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde));
+            positiveButton.setOnClickListener(v -> {
+                String email = emailInput.getText().toString().trim();
+                if (!email.isEmpty()) {
+                    enviarEmailRecuperacion(email);
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(LoginActivity.this, "El campo no puede estar vacío", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Botón "Cancelar"
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        if (negativeButton != null) {
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde));
+        }
     }
+
+
     private void enviarEmailRecuperacion(String email) {
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {

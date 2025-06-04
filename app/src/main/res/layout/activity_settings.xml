@@ -37,59 +37,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Nombre -->
-        <TextView
-            android:id="@+id/tvFullName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre Apellido"
-            android:textSize="18sp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="10dp"/>
 
         <!-- Botones de menú -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEditProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Editar perfil"
-            android:textColor="@color/menu_icon_color"
-            android:layout_marginBottom="5dp"
-            app:iconGravity="textStart"
-            app:cornerRadius="24dp"
-            android:padding="15dp"
-            app:backgroundTint="@android:color/white"
-            android:elevation="2dp"
-            android:gravity="start|center_vertical"
-            android:textAlignment="viewStart" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnExchangeHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Historial de intercambios"
-            android:textColor="@color/menu_icon_color"
-            android:layout_marginBottom="5dp"
-            app:iconGravity="textStart"
-            app:cornerRadius="24dp"
-            android:padding="15dp"
-            app:backgroundTint="@android:color/white"
-            android:elevation="2dp"
-            android:gravity="start|center_vertical"
-            android:textAlignment="viewStart" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPrivacySettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Términos y condiciones"
-            android:textColor="@color/menu_icon_color"
-            android:layout_marginBottom="5dp"
-            app:iconGravity="textStart"
-            app:cornerRadius="24dp"
-            android:padding="15dp"
-            app:backgroundTint="@android:color/white"
-            android:elevation="2dp"
-            android:gravity="start|center_vertical"
-            android:textAlignment="viewStart" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
@@ -103,7 +53,8 @@
             app:backgroundTint="@android:color/white"
             android:elevation="2dp"
             android:gravity="start|center_vertical"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            android:layout_marginTop="35dp"/>
 
 
 

@@ -87,9 +87,9 @@ public class MessagesActivity extends AppCompatActivity {
     }
 
     private void startActivityWithTransition(Class<?> target) {
-        Intent intent = new Intent(MessagesActivity.this, target);
+        Intent intent = new Intent(this, target);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void loadUserChats() {
