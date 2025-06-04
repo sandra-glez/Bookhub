@@ -86,7 +86,6 @@ public class FavoritesActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-
     private void loadFavoriteBooks() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -119,15 +118,14 @@ public class FavoritesActivity extends AppCompatActivity {
                             .addOnSuccessListener(bookSnapshots -> {
                                 favoriteBooks.clear();
                                 for (DocumentSnapshot doc : bookSnapshots) {
-                                    UserBook book = doc.toObject(UserBook.class);
-                                    book.setId(doc.getId());
-                                    favoriteBooks.add(book);
+                                    Boolean isAvailable = doc.getBoolean("available");
+                                    if (isAvailable != null && isAvailable) {
+                                        UserBook book = doc.toObject(UserBook.class);
+                                        book.setId(doc.getId());
+                                        favoriteBooks.add(book);
+                                    }
                                 }
                                 adapter.notifyDataSetChanged();
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("FavoritesActivity", "Error al cargar libros", e);
-                                Toast.makeText(this, "Error al cargar favoritos", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {

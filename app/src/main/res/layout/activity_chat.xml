@@ -20,8 +20,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/vector"
             android:contentDescription="Volver" />
@@ -97,7 +97,7 @@
             android:textStyle="bold"
             android:textColor="@color/verde"
             android:visibility="gone"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
 
 
 
@@ -133,7 +133,7 @@
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Escribe un mensaje"
             android:background="@drawable/rounded_input"
@@ -143,8 +143,8 @@
 
         <ImageButton
             android:id="@+id/sendButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"

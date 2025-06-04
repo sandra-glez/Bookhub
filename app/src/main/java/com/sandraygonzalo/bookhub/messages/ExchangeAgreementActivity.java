@@ -124,21 +124,6 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
                         String user1Id = doc.getString("user1Id");
                         String user2Id = doc.getString("user2Id");
 
-                        // Eliminar ambos libros
-                        if (bookOfferedId != null) {
-                            db.collection("userBooks").document(bookOfferedId)
-                                    .delete()
-                                    .addOnSuccessListener(unused -> Log.d("Exchange", "Libro ofrecido eliminado"))
-                                    .addOnFailureListener(e -> Log.e("Exchange", "Error al eliminar libro ofrecido", e));
-                        }
-
-                        if (bookRequestedId != null) {
-                            db.collection("userBooks").document(bookRequestedId)
-                                    .delete()
-                                    .addOnSuccessListener(unused -> Log.d("Exchange", "Libro solicitado eliminado"))
-                                    .addOnFailureListener(e -> Log.e("Exchange", "Error al eliminar libro solicitado", e));
-                        }
-
                         // Actualizar estado del intercambio y fecha
                         db.collection("exchanges").document(exchangeId)
                                 .update(
@@ -181,8 +166,6 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     private void loadExchangeInfo() {
         db.collection("exchanges").document(exchangeId)
@@ -288,8 +271,29 @@ public class ExchangeAgreementActivity extends AppCompatActivity {
                         } else {
                             imageView.setImageResource(R.drawable.placeholder);
                         }
+                    // LIBROS INTERCAMBIADOS
+                    if (bookDoc.exists()) {
+                        titleView.setText(bookDoc.getString("title"));
+                        Boolean disponible = bookDoc.getBoolean("available");
+
+                        if (Boolean.FALSE.equals(disponible)) {
+                            titleView.append(" (No disponible)");
+                        }
+                        if (coverUrl != null && !coverUrl.isEmpty()) {
+                            Glide.with(this)
+                                    .load(coverUrl)
+                                    .placeholder(R.drawable.placeholder)
+                                    .error(R.drawable.placeholder)
+                                    .into(imageView);
+                        } else {
+                            imageView.setImageResource(R.drawable.placeholder);
+                        }
+                    }
                     }
                 });
+
+
+
     }
 }
 

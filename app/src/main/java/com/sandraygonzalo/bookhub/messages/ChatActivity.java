@@ -1,4 +1,5 @@
 package com.sandraygonzalo.bookhub.messages;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,7 +22,9 @@ import com.sandraygonzalo.bookhub.R;
 import java.util.Date;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.util.Log;
 import android.widget.*;
@@ -33,13 +36,15 @@ public class ChatActivity extends AppCompatActivity {
     private String currentUserId;
     private String chatId;
     private String otherUserId;
-
+    private boolean yaPreguntadoValoracion = false;
     private RecyclerView recyclerView;
     private EditText messageInput;
     private ImageButton sendButton;
     private TextView chatTitle;
     private ImageView bookCover;
-    private TextView exchangeStatusText; // NUEVO: para mostrar el estado "✅ Intercambio completado"
+    private TextView exchangeStatusText;
+    private String user1IdGlobal;
+    private String user2IdGlobal;
 
     private List<Message> messageList;
     private ChatAdapter chatAdapter;
@@ -111,7 +116,28 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadExchangeStatus(); // por si vuelve del acuerdo
+        loadExchangeStatus();
+    }
+
+    private void verificarSiYaValoro(String user1Id, String user2Id) {
+        boolean soyUser1 = currentUserId.equals(user1Id);
+        String campo = soyUser1 ? "user1Rated" : "user2Rated";
+
+        db.collection("exchanges").document(chatId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) return;
+
+                    Boolean yaValoro = doc.getBoolean(campo);
+                    if (Boolean.TRUE.equals(yaValoro)) {
+                        Toast.makeText(this, "Ya valoraste este intercambio", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mostrarDialogoValoracionDesdeChat(user1Id, user2Id);
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error al verificar la valoración", Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void loadExchangeStatus() {
@@ -121,10 +147,31 @@ public class ChatActivity extends AppCompatActivity {
                     if (!doc.exists()) return;
 
                     String status = doc.getString("status");
+                    Boolean user1Rated = doc.getBoolean("user1Rated");
+                    Boolean user2Rated = doc.getBoolean("user2Rated");
+                    String bookRequestedId = doc.getString("bookRequestedId");
+                    String bookOfferedId = doc.getString("bookOfferedId");
+
+                    // Guardamos para el botón de valorar
+                    user1IdGlobal = doc.getString("user1Id");
+                    user2IdGlobal = doc.getString("user2Id");
+
+                    boolean soyUser1 = currentUserId.equals(user1IdGlobal);
+                    boolean yaValoro = soyUser1 ? Boolean.TRUE.equals(user1Rated) : Boolean.TRUE.equals(user2Rated);
+
                     if ("agreed".equals(status)) {
                         btnRequestExchange.setVisibility(View.GONE);
                         exchangeStatusText.setText("✅ Intercambio completado");
                         exchangeStatusText.setVisibility(View.VISIBLE);
+
+                        if (!yaValoro && !yaPreguntadoValoracion) {
+                            yaPreguntadoValoracion = true;
+                            verificarSiYaValoro(user1IdGlobal, user2IdGlobal);
+                        }
+
+                        if (Boolean.TRUE.equals(user1Rated) && Boolean.TRUE.equals(user2Rated)) {
+                            eliminarLibros(bookOfferedId, bookRequestedId);
+                        }
                     } else {
                         exchangeStatusText.setVisibility(View.GONE);
                         btnRequestExchange.setVisibility(View.VISIBLE);
@@ -132,6 +179,69 @@ public class ChatActivity extends AppCompatActivity {
                 });
     }
 
+    private void mostrarDialogoValoracionDesdeChat(String user1Id, String user2Id) {
+        final String[] opciones = {"1 ★", "2 ★", "3 ★", "4 ★", "5 ★"};
+
+        new AlertDialog.Builder(this)
+                .setTitle("Valora tu intercambio")
+                .setCancelable(false) // no permitir cerrarlo sin valorar
+                .setItems(opciones, (dialog, which) -> {
+                    int ratingSeleccionado = which + 1;
+                    guardarValoracionDesdeChat(user1Id, user2Id, ratingSeleccionado);
+                })
+                .show();
+    }
+    private void guardarValoracionDesdeChat(String user1Id, String user2Id, int rating) {
+        DocumentReference exchangeRef = db.collection("exchanges").document(chatId);
+        boolean esUser1 = currentUserId.equals(user1Id);
+
+        String ratingField = esUser1 ? "user1Rating" : "user2Rating";
+        String ratedField = esUser1 ? "user1Rated" : "user2Rated";
+        String targetUserId = esUser1 ? user2Id : user1Id;
+
+        exchangeRef.update(ratingField, rating, ratedField, true)
+                .addOnSuccessListener(unused -> actualizarPromedioUsuarioDesdeChat(targetUserId, rating))
+                .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar la valoración", Toast.LENGTH_SHORT).show());
+    }
+    private void actualizarPromedioUsuarioDesdeChat(String userId, int nuevaValoracion) {
+        DocumentReference userRef = db.collection("users").document(userId);
+
+        userRef.get().addOnSuccessListener(doc -> {
+            if (!doc.exists()) return;
+
+            Map<String, Object> ratingMap = (Map<String, Object>) doc.get("rating");
+            double average = ratingMap != null && ratingMap.get("average") instanceof Number ?
+                    ((Number) ratingMap.get("average")).doubleValue() : 0.0;
+            int total = ratingMap != null && ratingMap.get("totalExchanges") instanceof Number ?
+                    ((Number) ratingMap.get("totalExchanges")).intValue() : 0;
+
+            double nuevoAverage = ((average * total) + nuevaValoracion) / (total + 1);
+            int nuevoTotal = total + 1;
+
+            Map<String, Object> nuevoRating = new HashMap<>();
+            nuevoRating.put("average", nuevoAverage);
+            nuevoRating.put("totalExchanges", nuevoTotal);
+
+            userRef.update("rating", nuevoRating)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "Valoración registrada ✅", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(this, "Error al actualizar rating", Toast.LENGTH_SHORT).show());
+        });
+    }
+    private void eliminarLibros(String book1Id, String book2Id) {
+        if (book1Id != null) {
+            db.collection("userBooks").document(book1Id)
+                    .update("available", false)
+                    .addOnSuccessListener(unused -> Log.d("Exchange", "📕 Libro 1 marcado como no disponible"))
+                    .addOnFailureListener(e -> Log.e("Exchange", "❌ Error al actualizar libro 1", e));
+        }
+
+        if (book2Id != null) {
+            db.collection("userBooks").document(book2Id)
+                    .update("available", false)
+                    .addOnSuccessListener(unused -> Log.d("Exchange", "📘 Libro 2 marcado como no disponible"))
+                    .addOnFailureListener(e -> Log.e("Exchange", "❌ Error al actualizar libro 2", e));
+        }
+    }
     private void loadBookInfo() {
         Log.d("CHAT", "Cargando datos del libro para chatId: " + chatId);
 
@@ -205,8 +315,6 @@ public class ChatActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("CHAT", "Error al obtener exchange", e));
     }
-
-
     private void loadMessages() {
         messagesRef.orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshots, error) -> {
@@ -220,7 +328,6 @@ public class ChatActivity extends AppCompatActivity {
                     recyclerView.scrollToPosition(messageList.size() - 1);
                 });
     }
-
     private void setupSendButton() {
         sendButton.setOnClickListener(v -> {
             String content = messageInput.getText().toString().trim();
@@ -234,7 +341,6 @@ public class ChatActivity extends AppCompatActivity {
                     .update("lastMessage", content, "lastMessageAt", FieldValue.serverTimestamp());
         });
     }
-
     private void loadOtherUserInfo() {
         TextView otherUsernameText = findViewById(R.id.otherUsername);
         db.collection("users").document(otherUserId).get()

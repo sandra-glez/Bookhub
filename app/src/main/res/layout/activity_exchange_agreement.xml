@@ -4,7 +4,7 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/white2"
     android:padding="16dp">
 
     <LinearLayout
@@ -27,7 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardElevation="6dp"
             app:cardCornerRadius="12dp">
 
             <LinearLayout
@@ -68,7 +67,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardElevation="6dp"
                 app:cardCornerRadius="12dp">
 
                 <LinearLayout
@@ -108,7 +106,8 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:backgroundTint="@color/verde"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:padding="15dp"/>
         <Button
             android:id="@+id/btnConfirmExchange"
             android:layout_width="match_parent"
@@ -117,7 +116,19 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:backgroundTint="@color/verde"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:padding="15dp"/>
+        <Button
+            android:id="@+id/btnRateUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Valorar usuario"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/verde"
+            android:layout_marginTop="16dp"
+            android:padding="15dp" />
+
 
     </LinearLayout>
 </ScrollView>

@@ -78,6 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         db.collection("userBooks")
                 .whereEqualTo("ownerId", uid)
+                .whereEqualTo("available", true)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -86,8 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
                         bookList.add(book);
                     }
                     adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al cargar libros", e));
+                });
 
         //AÑADIR LIBRO
         addBookLauncher = registerForActivityResult(
@@ -179,9 +179,10 @@ public class ProfileActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("ProfileActivity", "Error al cargar perfil", e));
 
-// 2. Libros que ha subido
+        // 2. Libros que ha subido
         db.collection("userBooks")
                 .whereEqualTo("ownerId", uid)
+                .whereEqualTo("available", true)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     int bookCount = querySnapshot.size();
@@ -221,6 +222,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Refrescar lista de libros
         db.collection("userBooks")
                 .whereEqualTo("ownerId", uid)
+                .whereEqualTo("available", true)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<UserBook> updatedBooks = new ArrayList<>();
@@ -238,6 +240,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Refrescar contador de libros
         db.collection("userBooks")
                 .whereEqualTo("ownerId", uid)
+                .whereEqualTo("available", true)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     TextView statValue3 = findViewById(R.id.statValue3);
